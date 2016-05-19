@@ -82,5 +82,26 @@ public class Contact extends User implements java.io.Serializable {
 				+ mcontactCname + "]";
 	}
 
-	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Contact)) return false;
+
+		Contact contact = (Contact) o;
+
+		if (!mcontactId.equals(contact.mcontactId)) return false;
+		if (mcontactUserId != null ? !mcontactUserId.equals(contact.mcontactUserId) : contact.mcontactUserId != null)
+			return false;
+		if (mcontactUserName != null ? !mcontactUserName.equals(contact.mcontactUserName) : contact.mcontactUserName != null)
+			return false;
+		if (mcontactCid != null ? !mcontactCid.equals(contact.mcontactCid) : contact.mcontactCid != null)
+			return false;
+		return !(mcontactCname != null ? !mcontactCname.equals(contact.mcontactCname) : contact.mcontactCname != null);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return mcontactId.hashCode();
+	}
 }
