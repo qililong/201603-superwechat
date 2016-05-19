@@ -330,7 +330,7 @@
         <!-- 设置环信应用的appkey -->
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="YXA6EbObsUqbi6gky75BiU4v_mDHJx8" />
+            android:value="huwei#huwei" />
         <!-- 声明sdk所需的service -->
         <service android:name="com.easemob.chat.EMChatService"/>
         <!-- 声明sdk所需的receiver -->
