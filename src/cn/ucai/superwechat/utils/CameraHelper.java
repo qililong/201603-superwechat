@@ -24,7 +24,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 import com.easemob.chat.EMVideoCallHelper;
-import cn.ucai.superwechat.superWeChat;
+import cn.ucai.superwechat.superWeChatApplication;
 
 public class CameraHelper implements PreviewCallback {
     private static final String TAG = "CameraHelper";
@@ -309,6 +309,6 @@ public class CameraHelper implements PreviewCallback {
     }
 
     boolean isScreenOriatationPortrait() {
-        return superWeChat.applicationContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        return superWeChatApplication.applicationContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
     }
 }

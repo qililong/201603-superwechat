@@ -87,7 +87,7 @@ import com.easemob.chat.TextMessageBody;
 import com.easemob.chat.VideoMessageBody;
 import com.easemob.chat.VoiceMessageBody;
 
-import cn.ucai.superwechat.superWeChat;
+import cn.ucai.superwechat.superWeChatApplication;
 import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.adapter.ExpressionAdapter;
 import cn.ucai.superwechat.adapter.ExpressionPagerAdapter;
@@ -855,7 +855,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 			return;
 		}
 
-		cameraFile = new File(PathUtil.getInstance().getImagePath(), superWeChat.getInstance().getUserName()
+		cameraFile = new File(PathUtil.getInstance().getImagePath(), superWeChatApplication.getInstance().getUserName()
 				+ System.currentTimeMillis() + ".jpg");
 		cameraFile.getParentFile().mkdirs();
 		startActivityForResult(
