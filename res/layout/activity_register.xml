@@ -74,7 +74,7 @@
                 android:src="@drawable/icon_account" />
 
             <EditText
-                android:id="@+id/usernike"
+                android:id="@+id/usernick"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
@@ -186,6 +186,7 @@
             android:orientation="horizontal" >
 
             <Button
+                android:id="@+id/btnlogin"
                 android:layout_weight="3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -193,13 +194,13 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="10dp"
                 android:background="@color/btn_white_pressed"
-                android:onClick="register"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp"
                 android:text="@string/login"
                 android:textColor="#000"
                 android:textSize="20sp" />
             <Button
+                android:id="@+id/btnregister"
                 android:layout_weight="2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -207,7 +208,6 @@
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_login_bg"
-                android:onClick="register"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp"
                 android:text="@string/register"
