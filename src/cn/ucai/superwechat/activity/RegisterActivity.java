@@ -35,7 +35,6 @@ import cn.ucai.superwechat.superWeChatApplication;
 
 /**
  * 注册页
- * 
  */
 public class RegisterActivity extends BaseActivity {
 	final static String TAP = RegisterActivity.class.getCanonicalName();
