@@ -97,7 +97,6 @@ public class RegisterActivity extends BaseActivity {
 
 	/**
 	 * 注册
-	 * 
 	 * @param
 	 */
 	private void setRegisterListener() {
