@@ -11,10 +11,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package cn.ucai.superwechat.activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,7 +28,9 @@ import com.easemob.EMError;
 import com.easemob.chat.EMChatManager;
 import com.easemob.exceptions.EaseMobException;
 
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
+import cn.ucai.superwechat.listener.OnSetAvatarListener;
 import cn.ucai.superwechat.superWeChatApplication;
 
 /**
@@ -35,22 +39,45 @@ import cn.ucai.superwechat.superWeChatApplication;
  */
 public class RegisterActivity extends BaseActivity {
 	final static String TAP = RegisterActivity.class.getCanonicalName();
-	Context mContext = this;
+	Activity mContext = this;
 	private EditText userNameEditText;
 	private EditText passwordEditText;
 	private EditText confirmPwdEditText;
 	private EditText userNickEditText;
 	ImageView mIVAvatar;
+	OnSetAvatarListener mOnSetAvatarListener;
+	String avatarName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(cn.ucai.superwechat.R.layout.activity_register);
 		initView();
-		setRegisterListener();
-		setLoginListener();
+		setListener();
 	}
 
+	private void setListener() {
+		setRegisterListener();
+		setLoginListener();
+		setAvatarListener();
+	}
+
+	private void setAvatarListener() {
+		findViewById(R.id.rl).setOnClickListener(new View.OnClickListener() {
+
+
+			@Override
+			public void onClick(View v) {
+				mOnSetAvatarListener = new OnSetAvatarListener(mContext, R.id.ll,
+						getAvatarName(), I.AVATAR_TYPE_USER_PATH);
+			}
+		});
+	}
+
+	private String getAvatarName() {
+		avatarName = System.currentTimeMillis() + "";
+		return avatarName;
+	}
 	private void setLoginListener() {
 		findViewById(R.id.btnlogin).setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -81,9 +108,12 @@ public class RegisterActivity extends BaseActivity {
 				final String pwd = passwordEditText.getText().toString().trim();
 				String confirm_pwd = confirmPwdEditText.getText().toString().trim();
 				if (TextUtils.isEmpty(username)) {
-					Toast.makeText(mContext, getResources().getString(cn.ucai.superwechat.R.string.User_name_cannot_be_empty), Toast.LENGTH_SHORT).show();
 					userNameEditText.requestFocus();
+					userNameEditText.setError(getResources().getString(cn.ucai.superwechat.R.string.User_name_cannot_be_empty));
 					return;
+				} else if (!username.matches("[\\w][\\w\\d_]+")) {
+					userNameEditText.requestFocus();
+					userNameEditText.setError(getResources().getString(R.string.User_name_cannot_be_wd));
 				} else if (TextUtils.isEmpty(pwd)) {
 					Toast.makeText(mContext, getResources().getString(cn.ucai.superwechat.R.string.Password_cannot_be_empty), Toast.LENGTH_SHORT).show();
 					passwordEditText.requestFocus();
@@ -145,6 +175,15 @@ public class RegisterActivity extends BaseActivity {
 		});
 
 	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode==RESULT_OK){
+			mOnSetAvatarListener.setAvatar(requestCode,data,mIVAvatar);
+		}
+	}
+
 
 	public void back(View view) {
 		finish();

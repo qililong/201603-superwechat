@@ -66,6 +66,8 @@ public class LoginActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setUserNameChangedListener();
+		setRegisterListener();
+		setLoginListener();
 	}
 
 	private void setUserNameChangedListener() {
@@ -73,8 +75,6 @@ public class LoginActivity extends BaseActivity {
 		if (DemoHXSDKHelper.getInstance().isLogined()) {
 			autoLogin = true;
 			startActivity(new Intent(LoginActivity.this, MainActivity.class));
-			setloginListener();
-			setRegisterListener();
 			return;
 		}
 		setContentView(cn.ucai.superwechat.R.layout.activity_login);
@@ -109,8 +109,8 @@ public class LoginActivity extends BaseActivity {
 	 * 
 	 * @param
 	 */
-	private void setloginListener() {
-		findViewById(R.id.btnlogin).setOnClickListener(new View.OnClickListener() {
+	private void setLoginListener() {
+		findViewById(R.id.btnlogin1).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (!CommonUtils.isNetWorkConnected(mContext)) {
@@ -254,7 +254,7 @@ public class LoginActivity extends BaseActivity {
 	 * @param
 	 */
 	private void setRegisterListener() {
-		findViewById(R.id.btnregister).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.btnregister1).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				startActivityForResult(new Intent(mContext, RegisterActivity.class), 0);
