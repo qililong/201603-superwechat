@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Response;
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
@@ -38,15 +39,19 @@ import java.util.Map;
 
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.DemoHXSDKHelper;
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.User;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.db.EMUserDao;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.EMUser;
 import cn.ucai.superwechat.superWeChatApplication;
 import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.MD5;
+import cn.ucai.superwechat.utils.Utils;
 
 /**
  * 登陆页面
@@ -176,15 +181,37 @@ public class LoginActivity extends BaseActivity {
 		User user = dao.findUserByUserName(currentUsername);
 		if (user != null) {
 			if (user.getMUserPassword().equals(MD5.getData(currentPassword))) {
-				saveUser(user);
 				loginSuccess();
 			} else {
 				pd.dismiss();
 				Toast.makeText(getApplicationContext(), cn.ucai.superwechat.R.string.login_failure_failed, Toast.LENGTH_LONG).show();
 			}
 		} else {
-
+			try {
+				String path = new ApiParams()
+						.with(I.User.USER_NAME, currentUsername)
+                        .with(I.User.PASSWORD, currentPassword)
+						.getRequestUrl(I.REQUEST_LOGIN);
+				executeRequest(new GsonRequest<User>(path, User.class, responseListener(), errorListener()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+	}
+
+	private Response.Listener<User> responseListener() {
+		return new Response.Listener<User>() {
+			@Override
+			public void onResponse(User user) {
+				if (user.isResult()) {
+					saveUser(user);
+					loginSuccess();
+				} else {
+					pd.dismiss();
+					Utils.showToast(mContext,Utils.getResourceString(mContext,user.getMsg()),Toast.LENGTH_SHORT));
+				}
+			}
+		};
 	}
 
 	private void saveUser(User user) {
@@ -207,6 +234,7 @@ public class LoginActivity extends BaseActivity {
 			EMChatManager.getInstance().loadAllConversations();
 			// 处理好友和群组
 			initializeContacts();
+			//下载用户头像到sd卡里面
 		} catch (Exception e) {
 			e.printStackTrace();
 			// 取好友或者群聊失败，不让进入主页面
