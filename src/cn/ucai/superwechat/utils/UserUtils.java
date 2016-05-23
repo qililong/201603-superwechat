@@ -2,7 +2,6 @@ package cn.ucai.superwechat.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +13,6 @@ import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.Contact;
-import cn.ucai.superwechat.bean.User;
 import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.domain.EMUser;
 import cn.ucai.superwechat.superWeChatApplication;
@@ -41,9 +39,6 @@ public class UserUtils {
 
 	public static Contact getUserBeanInfo(String username) {
 		Contact contact = superWeChatApplication.getInstance().getUserList().get(username);
-		if (contact == null) {
-			Log.i("main", "VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-		}
 		return contact;
 	}
 
@@ -61,11 +56,8 @@ public class UserUtils {
     }
 
 	public static void setUserAvatar(String url, NetworkImageView imageView) {
-		Log.i("main", "11111111111111111111111111");
 		if (url == null && url.isEmpty()) return;
-		Log.i("main", "222222222222222222");
 		imageView.setImageUrl(url, RequestManager.getImageLoader());
-		Log.i("main", "AAAAAAAAAAAAAAAAAAAAAAAAAA");
 		imageView.setErrorImageResId(R.drawable.default_image);
 		imageView.setDefaultImageResId(R.drawable.default_image);
 
@@ -109,9 +101,13 @@ public class UserUtils {
     }
 
 	public static void setUserBeanNick(String username, TextView textView) {
-		User user = getUserBeanInfo(username);
-		if(user != null){
-			textView.setText(user.getMUserNick());
+		Contact contact = getUserBeanInfo(username);
+		if(contact != null) {
+			if (contact.getMUserNick() != null) {
+				textView.setText(contact.getMUserNick());
+			}else if (contact.getMContactCname() != null) {
+				textView.setText(contact.getMUserName());
+			}
 		}else{
 			textView.setText(username);
 		}
