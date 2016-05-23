@@ -180,7 +180,7 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	private void loginAppServer() {
-		UserDao dao = new UserDao(mContext,"user",null, 0);
+		UserDao dao = new UserDao(mContext);
 		User user = dao.findUserByUserName(currentUsername);
 		if (user != null) {
 			if (user.getMUserPassword().equals(MD5.getData(currentPassword))) {
@@ -211,7 +211,7 @@ public class LoginActivity extends BaseActivity {
 					loginSuccess();
 				} else {
 					pd.dismiss();
-					Utils.showToast(mContext,Utils.getResourceString(mContext,user.getMsg()),Toast.LENGTH_SHORT));
+					Utils.showToast(mContext,Utils.getResourceString(mContext,user.getMsg()),Toast.LENGTH_SHORT);
 				}
 			}
 		};

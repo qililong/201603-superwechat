@@ -15,19 +15,20 @@ import cn.ucai.superwechat.bean.User;
 public class UserDao extends SQLiteOpenHelper{
     static String TABLE_NAME = "user";
 
-    public UserDao(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public UserDao(Context context) {
         super(context, "user", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "DROP TABLE IF EXISTS " + I.User.TABLE_NAME + " " +
-                "CREATE TABLE " + I.User.TABLE_NAME +
-                I.User.USER_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-                I.User.USER_NAME + " TEXT NOT NULL," +
-                I.User.PASSWORD + " TEXT NOT NULL" +
+        String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +"("+
+                I.User.USER_ID +" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                I.User.USER_NAME +" TEXT NOT NULL," +
+                I.User.PASSWORD + " TEXT NOT NULL," +
                 I.User.NICK + " TEXT NOT NULL," +
-                I.User.UN_READ_MSG_COUNT + " INTEGER DEFAULT 0" + ")";
+                I.User.UN_READ_MSG_COUNT + " INTEGER DEFAULT 0" +
+                ");";
+        db.execSQL(sql);
     }
 
     @Override
