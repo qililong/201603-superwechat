@@ -49,6 +49,8 @@ import cn.ucai.superwechat.db.EMUserDao;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.EMUser;
 import cn.ucai.superwechat.superWeChatApplication;
+import cn.ucai.superwechat.task.DownloadAllGroupTask;
+import cn.ucai.superwechat.task.DownloadContactListTask;
 import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.MD5;
 import cn.ucai.superwechat.utils.Utils;
@@ -232,6 +234,14 @@ public class LoginActivity extends BaseActivity {
 			// ** manually load all local groups and
 			EMGroupManager.getInstance().loadAllGroups();
 			EMChatManager.getInstance().loadAllConversations();
+			new Runnable() {
+				@Override
+				public void run() {
+
+				}
+			};
+			new DownloadAllGroupTask(mContext, currentUsername).execute();
+			new DownloadContactListTask(mContext, currentUsername).execute();
 			// 处理好友和群组
 			initializeContacts();
 			//下载用户头像到sd卡里面
