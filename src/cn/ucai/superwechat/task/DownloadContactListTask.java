@@ -11,7 +11,6 @@ import java.util.HashMap;
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.activity.BaseActivity;
 import cn.ucai.superwechat.bean.Contact;
-
 import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.superWeChatApplication;
@@ -63,8 +62,9 @@ public class DownloadContactListTask extends BaseActivity {
                     for (Contact c : list) {
                         userList.put(c.getMContactCname(), c);
                     }
-                    mContext.sendStickyBroadcast(new Intent("update_contact_list"));
+                    superWeChatApplication.getInstance().setUserList(userList);
                 }
+                mContext.sendStickyBroadcast(new Intent("update_contact_list"));
             }
         };
     }

@@ -126,6 +126,7 @@ public class RegisterActivity extends BaseActivity {
 				} else if (!username.matches("[a-zA-Z]+[a-zA-Z0-9_]+")) {
 					userNameEditText.requestFocus();
 					userNameEditText.setError(getResources().getString(R.string.User_name_cannot_be_wd));
+					return;
 				} else if (TextUtils.isEmpty(pwd)) {
 					Toast.makeText(mContext, getResources().getString(cn.ucai.superwechat.R.string.Password_cannot_be_empty), Toast.LENGTH_SHORT).show();
 					passwordEditText.requestFocus();

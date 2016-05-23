@@ -228,16 +228,13 @@ public class LoginActivity extends BaseActivity {
 	private void saveUser(User user) {
 		superWeChatApplication instance = superWeChatApplication.getInstance();
 		instance.setUser(user);
-		instance.setUserName(user.getMUserName());
+		// 登陆成功，保存用户名密码
+		instance.setUserName(currentUsername);
 		instance.setPassword(currentPassword);
 		superWeChatApplication.currentUserNick = user.getMUserNick();
 	}
 
 	private void loginSuccess() {
-		// 登陆成功，保存用户名密码
-		superWeChatApplication.getInstance().setUserName(currentUsername);
-		superWeChatApplication.getInstance().setPassword(currentPassword);
-
 		try {
 			// ** 第一次登录或者之前logout后再登录，加载所有本地群和回话
 			// ** manually load all local groups and
@@ -264,7 +261,7 @@ public class LoginActivity extends BaseActivity {
 							utils.downloadFile(response,file,false);
 						}
 					}).execute(null);
-			new Thread(new Runnable() {
+			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
 					new DownloadAllGroupTask(mContext, currentUsername).execute();
