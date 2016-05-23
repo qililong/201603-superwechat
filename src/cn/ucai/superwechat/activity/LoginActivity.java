@@ -31,7 +31,12 @@ import com.android.volley.Response;
 import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
 
+
+import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,12 +47,15 @@ import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.bean.Message;
 import cn.ucai.superwechat.bean.User;
 import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.data.GsonRequest;
+import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.db.EMUserDao;
 import cn.ucai.superwechat.db.UserDao;
 import cn.ucai.superwechat.domain.EMUser;
+import cn.ucai.superwechat.listener.OnSetAvatarListener;
 import cn.ucai.superwechat.superWeChatApplication;
 import cn.ucai.superwechat.task.DownloadAllGroupTask;
 import cn.ucai.superwechat.task.DownloadContactListTask;
@@ -235,6 +243,27 @@ public class LoginActivity extends BaseActivity {
 			// ** manually load all local groups and
 			EMGroupManager.getInstance().loadAllGroups();
 			EMChatManager.getInstance().loadAllConversations();
+			//下载用户头像到SD卡
+			final OkHttpUtils<Message> utils = new OkHttpUtils<Message>();
+			utils.url(superWeChatApplication.SERVER_ROOT)
+					.addParam(I.KEY_REQUEST,I.REQUEST_DOWNLOAD_AVATAR)
+					.addParam(I.AVATAR_TYPE,currentUsername)
+					.doInBackground(new Callback() {
+						@Override
+						public void onFailure(Request request, IOException e) {
+							Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+						}
+
+						@Override
+						public void onResponse(com.squareup.okhttp.Response response) throws IOException {
+							String avatarPath = I.AVATAR_TYPE_USER_PATH + I.BACKSLASH
+									+ currentUsername + I.AVATAR_SUFFIX_JPG;
+							File file = OnSetAvatarListener.getAvatarFile(LoginActivity.this, avatarPath);
+							FileOutputStream out = null;
+							out = new FileOutputStream(file);
+							utils.downloadFile(response,file,false);
+						}
+					}).execute(null);
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -245,7 +274,6 @@ public class LoginActivity extends BaseActivity {
 			});
 			// 处理好友和群组
 			initializeContacts();
-			//下载用户头像到sd卡里面
 		} catch (Exception e) {
 			e.printStackTrace();
 			// 取好友或者群聊失败，不让进入主页面
@@ -309,12 +337,12 @@ public class LoginActivity extends BaseActivity {
 		userlist.put(Constant.GROUP_USERNAME, groupUser);
 		
 		// 添加"Robot"
-		EMUser robotUser = new EMUser();
-		String strRobot = getResources().getString(cn.ucai.superwechat.R.string.robot_chat);
-		robotUser.setUsername(Constant.CHAT_ROBOT);
-		robotUser.setNick(strRobot);
-		robotUser.setHeader("");
-		userlist.put(Constant.CHAT_ROBOT, robotUser);
+//		EMUser robotUser = new EMUser();
+//		String strRobot = getResources().getString(cn.ucai.superwechat.R.string.robot_chat);
+//		robotUser.setUsername(Constant.CHAT_ROBOT);
+//		robotUser.setNick(strRobot);
+//		robotUser.setHeader("");
+//		userlist.put(Constant.CHAT_ROBOT, robotUser);
 		
 		// 存入内存
 		((DemoHXSDKHelper)HXSDKHelper.getInstance()).setContactList(userlist);
