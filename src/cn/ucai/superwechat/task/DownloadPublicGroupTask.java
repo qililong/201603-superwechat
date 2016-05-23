@@ -23,10 +23,13 @@ public class DownloadPublicGroupTask extends BaseActivity {
     Context mContext;
     String username;
     String path;
+    int pageId, pageSize;
 
-    public DownloadPublicGroupTask(Context context, String username) {
-        this.mContext = context;
+    public DownloadPublicGroupTask(Context mContext, String username, int pageId, int pageSize) {
+        this.mContext = mContext;
         this.username = username;
+        this.pageId = pageId;
+        this.pageSize = pageSize;
         initPath();
     }
 

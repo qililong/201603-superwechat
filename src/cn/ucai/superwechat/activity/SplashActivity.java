@@ -1,5 +1,6 @@
 package cn.ucai.superwechat.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,7 +12,15 @@ import android.widget.TextView;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
+
 import cn.ucai.superwechat.DemoHXSDKHelper;
+import cn.ucai.superwechat.I;
+import cn.ucai.superwechat.bean.User;
+import cn.ucai.superwechat.db.UserDao;
+import cn.ucai.superwechat.superWeChatApplication;
+import cn.ucai.superwechat.task.DownloadAllGroupTask;
+import cn.ucai.superwechat.task.DownloadContactListTask;
+import cn.ucai.superwechat.task.DownloadPublicGroupTask;
 
 /**
  * 开屏页
@@ -20,6 +29,8 @@ import cn.ucai.superwechat.DemoHXSDKHelper;
 public class SplashActivity extends BaseActivity {
 	private RelativeLayout rootLayout;
 	private TextView versionText;
+
+	Context mContext;
 	
 	private static final int sleepTime = 2000;
 
@@ -30,6 +41,7 @@ public class SplashActivity extends BaseActivity {
 
 		rootLayout = (RelativeLayout) findViewById(cn.ucai.superwechat.R.id.splash_root);
 		versionText = (TextView) findViewById(cn.ucai.superwechat.R.id.tv_version);
+		mContext = this;
 
 		versionText.setText(getVersion());
 		AlphaAnimation animation = new AlphaAnimation(0.3f, 1.0f);
@@ -40,6 +52,16 @@ public class SplashActivity extends BaseActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
+
+		if (DemoHXSDKHelper.getInstance().isLogined()) {
+			String username = superWeChatApplication.getInstance().getUserName();
+			UserDao dao = new UserDao(mContext);
+			User user = dao.findUserByUserName(username);
+			superWeChatApplication.getInstance().setUser(user);
+			new DownloadContactListTask(mContext, username).execute();
+			new DownloadAllGroupTask(mContext, username).execute();
+			new DownloadPublicGroupTask(mContext, username, I.PAGE_ID_DEFAULT, I.PAGE_SIZE_DEFAULT).execute();
+		}
 
 		new Thread(new Runnable() {
 			public void run() {

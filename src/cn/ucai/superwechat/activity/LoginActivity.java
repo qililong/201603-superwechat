@@ -51,6 +51,7 @@ import cn.ucai.superwechat.domain.EMUser;
 import cn.ucai.superwechat.superWeChatApplication;
 import cn.ucai.superwechat.task.DownloadAllGroupTask;
 import cn.ucai.superwechat.task.DownloadContactListTask;
+import cn.ucai.superwechat.task.DownloadPublicGroupTask;
 import cn.ucai.superwechat.utils.CommonUtils;
 import cn.ucai.superwechat.utils.MD5;
 import cn.ucai.superwechat.utils.Utils;
@@ -179,7 +180,7 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	private void loginAppServer() {
-		UserDao dao = new UserDao(mContext);
+		UserDao dao = new UserDao(mContext,"user",null, 0);
 		User user = dao.findUserByUserName(currentUsername);
 		if (user != null) {
 			if (user.getMUserPassword().equals(MD5.getData(currentPassword))) {
@@ -234,14 +235,14 @@ public class LoginActivity extends BaseActivity {
 			// ** manually load all local groups and
 			EMGroupManager.getInstance().loadAllGroups();
 			EMChatManager.getInstance().loadAllConversations();
-			new Runnable() {
+			new Thread(new Runnable() {
 				@Override
 				public void run() {
-
+					new DownloadAllGroupTask(mContext, currentUsername).execute();
+					new DownloadContactListTask(mContext, currentUsername).execute();
+					new DownloadPublicGroupTask(mContext, currentUsername, I.PAGE_ID_DEFAULT, I.PAGE_SIZE_DEFAULT).execute();
 				}
-			};
-			new DownloadAllGroupTask(mContext, currentUsername).execute();
-			new DownloadContactListTask(mContext, currentUsername).execute();
+			});
 			// 处理好友和群组
 			initializeContacts();
 			//下载用户头像到sd卡里面
