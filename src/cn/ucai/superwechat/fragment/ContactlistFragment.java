@@ -13,17 +13,11 @@
  */
 package cn.ucai.superwechat.fragment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -49,24 +43,32 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.easemob.chat.EMContactManager;
+import com.easemob.exceptions.EaseMobException;
+import com.easemob.util.EMLog;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map.Entry;
+
+import cn.ucai.superwechat.Constant;
+import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.activity.AddContactActivity;
 import cn.ucai.superwechat.activity.ChatActivity;
 import cn.ucai.superwechat.activity.GroupsActivity;
 import cn.ucai.superwechat.activity.MainActivity;
 import cn.ucai.superwechat.activity.NewFriendsMsgActivity;
-import cn.ucai.superwechat.activity.PublicChatRoomsActivity;
-import cn.ucai.superwechat.activity.RobotsActivity;
-import cn.ucai.superwechat.applib.controller.HXSDKHelper;
-import com.easemob.chat.EMContactManager;
-import cn.ucai.superwechat.Constant;
-import cn.ucai.superwechat.DemoHXSDKHelper;
 import cn.ucai.superwechat.adapter.ContactAdapter;
-import cn.ucai.superwechat.db.InviteMessgeDao;
+import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.bean.Contact;
 import cn.ucai.superwechat.db.EMUserDao;
+import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.EMUser;
+import cn.ucai.superwechat.superWeChatApplication;
 import cn.ucai.superwechat.widget.Sidebar;
-import com.easemob.exceptions.EaseMobException;
-import com.easemob.util.EMLog;
 
 /**
  * 联系人列表页
@@ -90,6 +92,9 @@ public class ContactlistFragment extends Fragment {
 	Handler handler = new Handler();
     private EMUser toBeProcessUser;
     private String toBeProcessUsername;
+
+	ContactListChangedReceiver mReceiver;
+	ArrayList<Contact> mContactList;
 
 	class HXContactSyncListener implements HXSDKHelper.HXSyncListener {
 		@Override
@@ -172,6 +177,7 @@ public class ContactlistFragment extends Fragment {
 		//黑名单列表
 		blackList = EMContactManager.getInstance().getBlackListUsernames();
 		contactList = new ArrayList<EMUser>();
+		mContactList = new ArrayList<Contact>();
 		// 获取设置contactlist
 		getContactList();
 		
@@ -273,6 +279,7 @@ public class ContactlistFragment extends Fragment {
 		} else {
 			progressBar.setVisibility(View.GONE);
 		}
+		registerContactListChangedReceiver();
 	}
 
 	@Override
@@ -432,6 +439,9 @@ public class ContactlistFragment extends Fragment {
 			((DemoHXSDKHelper)HXSDKHelper.getInstance()).getUserProfileManager().removeSyncContactInfoListener(contactInfoSyncListener);
 		}
 		super.onDestroy();
+		if (mReceiver != null) {
+			getActivity().unregisterReceiver(mReceiver);
+		}
 	}
 	
 	public void showProgressBar(boolean show) {
@@ -450,39 +460,37 @@ public class ContactlistFragment extends Fragment {
 	private void getContactList() {
 		contactList.clear();
 		//获取本地好友列表
-		Map<String, EMUser> users = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getContactList();
-		Iterator<Entry<String, EMUser>> iterator = users.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Entry<String, EMUser> entry = iterator.next();
-			if (!entry.getKey().equals(Constant.NEW_FRIENDS_USERNAME)
-			        && !entry.getKey().equals(Constant.GROUP_USERNAME)
-			        && !entry.getKey().equals(Constant.CHAT_ROOM)
-					&& !entry.getKey().equals(Constant.CHAT_ROBOT)
-					&& !blackList.contains(entry.getKey()))
-				contactList.add(entry.getValue());
+		ArrayList<Contact> contactList = superWeChatApplication.getInstance().getContactList();
+
+		// 添加"群聊"
+		Contact groupUser = new Contact();
+		String strGroup = getActivity().getString(cn.ucai.superwechat.R.string.group_chat);
+		groupUser.setMContactCname(Constant.GROUP_USERNAME);
+		groupUser.setMUserName(Constant.GROUP_USERNAME);
+		groupUser.setMUserNick(strGroup);
+		groupUser.setHeader("");
+		if (!mContactList.contains(groupUser)) {
+			this.mContactList.add(0, groupUser);
+		}
+		// 添加user"申请与通知"
+		Contact newFriends = new Contact();
+		newFriends.setMContactCname(Constant.NEW_FRIENDS_USERNAME);
+		newFriends.setMUserName(Constant.NEW_FRIENDS_USERNAME);
+		String strChat = getActivity().getString(cn.ucai.superwechat.R.string.Application_and_notify);
+		newFriends.setMUserNick(strChat);
+		newFriends.setHeader("");
+
+		if (!mContactList.contains(newFriends)) {
+			this.mContactList.add(0, newFriends);
 		}
 		// 排序
-		Collections.sort(contactList, new Comparator<EMUser>() {
+		Collections.sort(this.contactList, new Comparator<EMUser>() {
 
 			@Override
 			public int compare(EMUser lhs, EMUser rhs) {
 				return lhs.getUsername().compareTo(rhs.getUsername());
 			}
 		});
-
-		if(users.get(Constant.CHAT_ROBOT)!=null){
-			contactList.add(0, users.get(Constant.CHAT_ROBOT));
-		}
-		// 加入"群聊"和"聊天室"
-        if(users.get(Constant.CHAT_ROOM) != null)
-            contactList.add(0, users.get(Constant.CHAT_ROOM));
-        if(users.get(Constant.GROUP_USERNAME) != null)
-            contactList.add(0, users.get(Constant.GROUP_USERNAME));
-        
-		// 把"申请与通知"添加到首位
-		if(users.get(Constant.NEW_FRIENDS_USERNAME) != null)
-		    contactList.add(0, users.get(Constant.NEW_FRIENDS_USERNAME));
-		
 	}
 	
 	void hideSoftKeyboard() {
@@ -501,6 +509,19 @@ public class ContactlistFragment extends Fragment {
 	    }else if(((MainActivity)getActivity()).getCurrentAccountRemoved()){
 	    	outState.putBoolean(Constant.ACCOUNT_REMOVED, true);
 	    }
-	    
+	}
+
+	class ContactListChangedReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			refresh();
+		}
+	}
+
+	private void registerContactListChangedReceiver() {
+		mReceiver = new ContactListChangedReceiver();
+		IntentFilter filter = new IntentFilter("update_contact_list");
+		getActivity().registerReceiver(mReceiver, filter);
 	}
 }
