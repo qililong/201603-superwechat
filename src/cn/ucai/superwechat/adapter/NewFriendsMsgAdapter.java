@@ -13,8 +13,6 @@
  */
 package cn.ucai.superwechat.adapter;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
@@ -32,8 +30,12 @@ import android.widget.Toast;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
+
+import java.util.List;
+
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.InviteMessage;
+import cn.ucai.superwechat.domain.InviteMessage.InviteMesageStatus;
 
 public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 
@@ -84,15 +86,15 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 			holder.name.setText(msg.getFrom());
 			// holder.time.setText(DateUtils.getTimestampString(new
 			// Date(msg.getTime())));
-			if (msg.getStatus() == InviteMessage.InviteMesageStatus.BEAGREED) {
+			if (msg.getStatus() == InviteMesageStatus.BEAGREED) {
 				holder.status.setVisibility(View.INVISIBLE);
 				holder.reason.setText(str1);
-			} else if (msg.getStatus() == InviteMessage.InviteMesageStatus.BEINVITEED || msg.getStatus() == InviteMessage.InviteMesageStatus.BEAPPLYED) {
+			} else if (msg.getStatus() == InviteMesageStatus.BEINVITEED || msg.getStatus() == InviteMesageStatus.BEAPPLYED) {
 				holder.status.setVisibility(View.VISIBLE);
 				holder.status.setEnabled(true);
 				holder.status.setBackgroundResource(android.R.drawable.btn_default);
 				holder.status.setText(str2);
-				if(msg.getStatus() == InviteMessage.InviteMesageStatus.BEINVITEED){
+				if(msg.getStatus() == InviteMesageStatus.BEINVITEED){
 					if (msg.getReason() == null) {
 						// 如果没写理由
 						holder.reason.setText(str3);
@@ -111,11 +113,11 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 						acceptInvitation(holder.status, msg);
 					}
 				});
-			} else if (msg.getStatus() == InviteMessage.InviteMesageStatus.AGREED) {
+			} else if (msg.getStatus() == InviteMesageStatus.AGREED) {
 				holder.status.setText(str5);
 				holder.status.setBackgroundDrawable(null);
 				holder.status.setEnabled(false);
-			} else if(msg.getStatus() == InviteMessage.InviteMesageStatus.REFUSED){
+			} else if(msg.getStatus() == InviteMesageStatus.REFUSED){
 				holder.status.setText(str6);
 				holder.status.setBackgroundDrawable(null);
 				holder.status.setEnabled(false);
@@ -130,8 +132,8 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 	/**
 	 * 同意好友请求或者群申请
 	 * 
-	 * @param button
-	 * @param username
+	 * @param
+	 * @param
 	 */
 	private void acceptInvitation(final Button button, final InviteMessage msg) {
 		final ProgressDialog pd = new ProgressDialog(context);
@@ -156,7 +158,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 						public void run() {
 							pd.dismiss();
 							button.setText(str2);
-							msg.setStatus(InviteMessage.InviteMesageStatus.AGREED);
+							msg.setStatus(InviteMesageStatus.AGREED);
 							// 更新db
 							ContentValues values = new ContentValues();
 							values.put(InviteMessgeDao.COLUMN_NAME_STATUS, msg.getStatus().ordinal());
@@ -172,7 +174,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 						@Override
 						public void run() {
 							pd.dismiss();
-							Toast.makeText(context, str3 + e.getMessage(), 1).show();
+							Toast.makeText(context, str3 + e.getMessage(), Toast.LENGTH_LONG).show();
 						}
 					});
 
