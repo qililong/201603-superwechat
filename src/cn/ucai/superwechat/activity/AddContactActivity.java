@@ -120,16 +120,12 @@ public class AddContactActivity extends BaseActivity{
 				if (user != null) {
 					HashMap<String, Contact> userList = superWeChatApplication.getInstance().getUserList();
 					if (userList.containsKey(user.getMUserName())) {
-						nameText.setText(toAddUsername);
-						UserUtils.setUserBeanAvatar(user, avatar);
-						UserUtils.setUserBeanNick(user, nameText);
-						searchedUserLayout.setVisibility(View.VISIBLE);
 						startActivity(new Intent(AddContactActivity.this,UserProfileActivity.class)
 								.putExtra("username",user.getMUserName()));
 					} else {
 						searchedUserLayout.setVisibility(View.VISIBLE);
-						UserUtils.setUserBeanAvatar(user.getMUserName(), avatar);
-						UserUtils.setUserBeanNick(user.getMUserNick(), nameText);
+						UserUtils.setUserBeanAvatar(user, avatar);
+						UserUtils.setUserBeanNick(user, nameText);
 					}
 					tvView.setVisibility(View.GONE);
 				} else {
