@@ -585,9 +585,11 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 			// 被删除
 			Map<String, EMUser> localUsers = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getContactList();
             HashMap<String, Contact> userList = superWeChatApplication.getInstance().getUserList();
-            ArrayList<String> toDeleteNames = new ArrayList<String>();
+			ArrayList<Contact> contactList = superWeChatApplication.getInstance().getContactList();
+			ArrayList<String> toDeleteNames = new ArrayList<String>();
 			for (String username : usernameList) {
 				localUsers.remove(username);
+				userList.remove(username);
 				userDao.deleteContact(username);
 				inviteMessgeDao.deleteMessage(username);
                 if (userList.containsKey(username)){
@@ -632,10 +634,9 @@ public class MainActivity extends BaseActivity implements EMEventListener {
                 @Override
                 public void onResponse(Boolean aBoolean) {
                     if (aBoolean){
-                        superWeChatApplication.getInstance().getUserList().remove(username);
-                        superWeChatApplication.getInstance().getContactList().remove(
-                                superWeChatApplication.getInstance().getUserList().get(username)
-                        );
+						superWeChatApplication.getInstance().getContactList()
+								.remove(superWeChatApplication.getInstance().getUserList().get(username));
+						superWeChatApplication.getInstance().getUserList().remove(username);
                         mContext.sendStickyBroadcast(new Intent("update_contact_list"));
                         Utils.showToast(mContext,R.string.Delete_successfully,Toast.LENGTH_LONG);
                     }else {
