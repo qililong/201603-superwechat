@@ -18,24 +18,30 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
 
 import java.util.List;
 
+import cn.ucai.superwechat.I;
+import cn.ucai.superwechat.bean.User;
+import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.InviteMessage;
 import cn.ucai.superwechat.domain.InviteMessage.InviteMesageStatus;
+import cn.ucai.superwechat.utils.UserUtils;
 
 public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 
@@ -54,7 +60,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		if (convertView == null) {
 			holder = new ViewHolder();
 			convertView = View.inflate(context, cn.ucai.superwechat.R.layout.row_invite_msg, null);
-			holder.avator = (ImageView) convertView.findViewById(cn.ucai.superwechat.R.id.avatar);
+			holder.avator = (NetworkImageView) convertView.findViewById(cn.ucai.superwechat.R.id.avatar);
 			holder.reason = (TextView) convertView.findViewById(cn.ucai.superwechat.R.id.message);
 			holder.name = (TextView) convertView.findViewById(cn.ucai.superwechat.R.id.name);
 			holder.status = (Button) convertView.findViewById(cn.ucai.superwechat.R.id.user_state);
@@ -65,10 +71,10 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		
+
 		String str1 = context.getResources().getString(cn.ucai.superwechat.R.string.Has_agreed_to_your_friend_request);
 		String str2 = context.getResources().getString(cn.ucai.superwechat.R.string.agree);
-		
+
 		String str3 = context.getResources().getString(cn.ucai.superwechat.R.string.Request_to_add_you_as_a_friend);
 		String str4 = context.getResources().getString(cn.ucai.superwechat.R.string.Apply_to_the_group_of);
 		String str5 = context.getResources().getString(cn.ucai.superwechat.R.string.Has_agreed_to);
@@ -81,7 +87,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 			} else{
 				holder.groupContainer.setVisibility(View.GONE);
 			}
-			
+
 			holder.reason.setText(msg.getReason());
 			holder.name.setText(msg.getFrom());
 			// holder.time.setText(DateUtils.getTimestampString(new
@@ -124,10 +130,32 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 			}
 
 			// 设置用户头像
+			UserUtils.setUserBeansAvatar(msg.getFrom(), holder.avator);
+			UserUtils.setUserBeanNick(msg.getFrom(),holder.name);
+			try {
+				String path = new ApiParams()
+                        .with(I.User.USER_NAME, msg.getFrom())
+                        .getRequestUrl(I.REQUEST_FIND_USER);
+				Log.i("main", path.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return convertView;
 	}
+
+	private Response.Listener<User> serUserBeansAvatarListener(final TextView name) {
+		return new Response.Listener<User>() {
+			@Override
+			public void onResponse(User user) {
+
+					Log.i("main", user.getMUserNick().toString());
+
+			}
+		};
+	}
+
 
 	/**
 	 * 同意好友请求或者群申请
@@ -184,7 +212,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 	}
 
 	private static class ViewHolder {
-		ImageView avator;
+		NetworkImageView avator;
 		TextView name;
 		TextView reason;
 		Button status;

@@ -20,18 +20,20 @@ import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.domain.EMUser;
 import cn.ucai.superwechat.superWeChatApplication;
 
+
 public class UserUtils {
-    /**
-     * 根据username获取相应user，由于demo没有真实的用户数据，这里给的模拟的数据；
-     * @param username
-     * @return
-     */
-    public static EMUser getUserInfo(String username){
+	/**
+	 * 根据username获取相应user，由于demo没有真实的用户数据，这里给的模拟的数据；
+	 *
+	 * @param username
+	 * @return
+	 */
+
+	public static EMUser getUserInfo(String username){
         EMUser user = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getContactList().get(username);
         if(user == null){
             user = new EMUser(username);
         }
-            
         if(user != null){
             //demo没有这些数据，临时填充
         	if(TextUtils.isEmpty(user.getNick()))
@@ -69,6 +71,12 @@ public class UserUtils {
 	public static void setUserBeanAvatar(String username, NetworkImageView imageView) {
 		Contact contact = getUserBeanInfo(username);
 		if (contact != null && contact.getMContactCname() != null) {
+			setUserAvatar(getAvatarPath(username),imageView);
+		}
+	}
+
+	public static void setUserBeansAvatar(String username, NetworkImageView imageView) {
+		if (username != null) {
 			setUserAvatar(getAvatarPath(username),imageView);
 		}
 	}
@@ -128,6 +136,9 @@ public class UserUtils {
 			textView.setText(username);
 		}
 	}
+
+
+
 
 	public static void setUserBeanNick(User user, TextView textView) {
 		if(user != null) {

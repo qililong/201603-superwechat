@@ -21,6 +21,7 @@ public class UserDao extends SQLiteOpenHelper{
 
 
 
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +"("+
