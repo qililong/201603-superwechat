@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/mm_listitem"
-        android:visibility="gone" >
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -61,7 +61,7 @@
             android:background="@drawable/mm_listitem"
             android:duplicateParentState="true" >
 
-            <ImageView
+            <com.android.volley.toolbox.NetworkImageView
                 android:id="@+id/avatar"
                 android:layout_width="45dp"
                 android:layout_height="45dp"
@@ -96,5 +96,14 @@
                 android:textSize="14sp" />
         </RelativeLayout>
     </LinearLayout>
+    <TextView
+        android:id="@+id/notFind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="无结果"
+        android:textSize="30dp"
+        android:textColor="#000"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
 
 </LinearLayout>

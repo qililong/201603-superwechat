@@ -19,6 +19,8 @@ public class UserDao extends SQLiteOpenHelper{
         super(context, "user", null, 1);
     }
 
+
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +"("+
@@ -59,7 +61,7 @@ public class UserDao extends SQLiteOpenHelper{
         return insert > 0;
     }
 
-    public User findUserByUserName(String name) {
+    public  User findUserByUserName(String name) {
         SQLiteDatabase db = getReadableDatabase();
         String sql = "select * from "+TABLE_NAME + " where " + I.User.USER_NAME + "=?";
         Cursor c = db.rawQuery(sql, new String[]{name});
