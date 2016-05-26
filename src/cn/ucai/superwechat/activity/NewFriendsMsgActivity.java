@@ -13,17 +13,21 @@
  */
 package cn.ucai.superwechat.activity;
 
-import java.util.List;
-
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
-import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import java.util.List;
+
 import cn.ucai.superwechat.Constant;
 import cn.ucai.superwechat.DemoHXSDKHelper;
+import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.adapter.NewFriendsMsgAdapter;
+import cn.ucai.superwechat.applib.controller.HXSDKHelper;
+import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.InviteMessage;
 
@@ -33,6 +37,7 @@ import cn.ucai.superwechat.domain.InviteMessage;
  */
 public class NewFriendsMsgActivity extends BaseActivity {
 	private ListView listView;
+	Activity mContext = this;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,17 @@ public class NewFriendsMsgActivity extends BaseActivity {
 		listView.setAdapter(adapter);
 		((DemoHXSDKHelper)HXSDKHelper.getInstance()).getContactList().get(Constant.NEW_FRIENDS_USERNAME).setUnreadMsgCount(0);
 		
+	}
+
+	public static void setUserBeansNick(String name, TextView textView) {
+		try {
+			String path = new ApiParams()
+					.with(I.User.USER_NAME, name)
+					.getRequestUrl(I.REQUEST_FIND_USER);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void back(View view) {

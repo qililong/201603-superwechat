@@ -35,9 +35,7 @@ import com.easemob.chat.EMGroupManager;
 
 import java.util.List;
 
-import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.bean.User;
-import cn.ucai.superwechat.data.ApiParams;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.InviteMessage;
 import cn.ucai.superwechat.domain.InviteMessage.InviteMesageStatus;
@@ -131,15 +129,8 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 
 			// 设置用户头像
 			UserUtils.setUserBeansAvatar(msg.getFrom(), holder.avator);
-			UserUtils.setUserBeanNick(msg.getFrom(),holder.name);
-			try {
-				String path = new ApiParams()
-                        .with(I.User.USER_NAME, msg.getFrom())
-                        .getRequestUrl(I.REQUEST_FIND_USER);
-				Log.i("main", path.toString());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			UserUtils.setUserBeanNick(msg.getFrom(), holder.name);
+
 		}
 
 		return convertView;
