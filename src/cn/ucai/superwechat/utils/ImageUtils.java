@@ -19,8 +19,6 @@ import android.os.Environment;
 import com.easemob.util.EMLog;
 import com.easemob.util.PathUtil;
 
-
-
 import java.io.File;
 
 
