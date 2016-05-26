@@ -1,7 +1,9 @@
 package cn.ucai.superwechat.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -91,7 +93,7 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
 				EMConversation conversation = adapter.getItem(position);
 				String username = conversation.getUserName();
 				if (username.equals(superWeChatApplication.getInstance().getUserName()))
-					Toast.makeText(getActivity(), st2, 0).show();
+					Toast.makeText(getActivity(), st2, Toast.LENGTH_SHORT).show();
 				else {
 				    // 进入聊天页面
 				    Intent intent = new Intent(getActivity(), ChatActivity.class);
@@ -300,4 +302,5 @@ public class ChatAllHistoryFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {        
     }
+
 }
