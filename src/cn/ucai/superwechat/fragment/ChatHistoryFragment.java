@@ -19,8 +19,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -275,6 +277,28 @@ public class ChatHistoryFragment extends Fragment {
 			refresh();
 		}
 	}
-	
-	
+
+	class ContactListChangedReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			adapter.notifyDataSetChanged();
+		}
+	}
+
+	private ContactListChangedReceiver mContactListChangedReceiver;
+
+	private void registerContactListChangedReceiver() {
+		mContactListChangedReceiver = new ContactListChangedReceiver();
+		IntentFilter filter = new IntentFilter("update_contact_list");
+		getActivity().registerReceiver(mContactListChangedReceiver,filter);
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (mContactListChangedReceiver != null) {
+			getActivity().unregisterReceiver(mContactListChangedReceiver);
+		}
+	}
 }

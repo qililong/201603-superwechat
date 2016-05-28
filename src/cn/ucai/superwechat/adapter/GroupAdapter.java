@@ -235,7 +235,7 @@ public class GroupAdapter extends BaseAdapter implements SectionIndexer {
 					final Group user = mOriginalList.get(i);
 					String username = user.getMGroupName();
 
-					if(username.startsWith(prefixString)){
+					if(username.contains(prefixString) || user.getMGroupHxid().contains(prefixString)){
 						newValues.add(user);
 					}
 					else{
@@ -244,7 +244,7 @@ public class GroupAdapter extends BaseAdapter implements SectionIndexer {
 
 						// Start at index 0, in case valueText starts with space(s)
 						for (int k = 0; k < wordCount; k++) {
-							if (words[k].startsWith(prefixString)) {
+							if (words[k].contains(prefixString)) {
 								newValues.add(user);
 								break;
 							}

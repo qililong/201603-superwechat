@@ -510,13 +510,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 	protected void onGroupViewCreation(){
 	    group = EMGroupManager.getInstance().getGroup(toChatUsername);
 
-        
         if (group != null){
             ((TextView) findViewById(cn.ucai.superwechat.R.id.name)).setText(group.getGroupName());
         }else{
             ((TextView) findViewById(cn.ucai.superwechat.R.id.name)).setText(toChatUsername);
         }
-        
+
         // 监听当前会话的群聊解散被T事件
         groupListener = new GroupListener();
         EMGroupManager.getInstance().addGroupChangeListener(groupListener);
