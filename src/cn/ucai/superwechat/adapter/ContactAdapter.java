@@ -228,7 +228,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 					final Contact user = mOriginalList.get(i);
 					String username = user.getMContactCname();
 					
-					if(username.startsWith(prefixString)){
+					if(username.contains(prefixString) || user.getMUserNick().contains(prefixString)){
 						newValues.add(user);
 					}
 					else{
@@ -237,7 +237,7 @@ public class ContactAdapter extends BaseAdapter implements SectionIndexer{
 	
 	                     // Start at index 0, in case valueText starts with space(s)
 	                     for (int k = 0; k < wordCount; k++) {
-	                         if (words[k].startsWith(prefixString)) {
+	                         if (words[k].contains(prefixString)) {
 	                             newValues.add(user);
 	                             break;
 	                         }

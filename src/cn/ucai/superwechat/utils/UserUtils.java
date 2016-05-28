@@ -223,4 +223,15 @@ public class UserUtils {
 		imageView.setDefaultImageResId(R.drawable.group_icon);
 
 	}
+
+	public static String getPinYinFromHanZi(String hanzi) {
+		String pinyin = "";
+
+		for (int i = 0; i < hanzi.length(); i++) {
+			String s = hanzi.substring(i, i + 1);
+			pinyin = pinyin + HanziToPinyin.getInstance()
+					.get(s).get(0).target.toLowerCase();
+		}
+		return pinyin;
+	}
 }
