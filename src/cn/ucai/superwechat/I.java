@@ -218,4 +218,5 @@ public interface I {
 	String REQUEST_DOWNLOAD_AVATAR_GROUP            =       superWeChatApplication.SERVER_ROOT + "?" + KEY_REQUEST
 			+ "=" + REQUEST_DOWNLOAD_GROUP_AVATAR + "&" + AVATAR_TYPE + "=";
 
+	String DOWNLOAD_GROUP_AVATAR_URL = "http://10.0.2.2:8080/SuperWeChatServer/Server?request=download_group_avatar&avatarType=";
 }

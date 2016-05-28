@@ -2,6 +2,7 @@ package cn.ucai.superwechat.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -71,7 +72,7 @@ public class UserUtils {
 	public static void setUserBeanAvatar(String username, NetworkImageView imageView) {
 		Contact contact = getUserBeanInfo(username);
 		if (contact != null && contact.getMContactCname() != null) {
-			setUserAvatar(getAvatarPath(username),imageView);
+			setUserAvatar(getAvatarPath(username), imageView);
 		}
 	}
 
@@ -198,5 +199,28 @@ public class UserUtils {
 				user.setHeader("#");
 			}
 		}
+	}
+
+	public static void setGroupBeanAvatar(String hxid, NetworkImageView imageView) {
+		Log.i("main", "setGroupBeanAvatar" + hxid);
+		if (hxid != null && !hxid.isEmpty()) {
+			setGroupAvatar(getGroupAvatarPath(hxid), imageView);
+		}
+	}
+
+	public static String getGroupAvatarPath(String hxid) {
+		if (hxid == null || hxid.isEmpty()) {
+			return null;
+		}
+		Log.i("main", I.DOWNLOAD_GROUP_AVATAR_URL + hxid);
+		return I.DOWNLOAD_GROUP_AVATAR_URL + hxid;
+	}
+
+	public static void setGroupAvatar(String url, NetworkImageView imageView) {
+		if (url == null && url.isEmpty()) return;
+		imageView.setImageUrl(url, RequestManager.getImageLoader());
+		imageView.setErrorImageResId(R.drawable.group_icon);
+		imageView.setDefaultImageResId(R.drawable.group_icon);
+
 	}
 }
