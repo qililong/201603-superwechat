@@ -16,6 +16,7 @@ package cn.ucai.superwechat.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -50,6 +51,8 @@ public class GroupPickContactsActivity extends BaseActivity {
 	private PickContactAdapter contactAdapter;
 	/** group中一开始就有的成员 */
 	private List<String> exitingMembers;
+
+	private final int CREATE_NEW_GROUP = 10;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +107,8 @@ public class GroupPickContactsActivity extends BaseActivity {
 	 */
 	public void save(View v) {
 		setResult(RESULT_OK, new Intent().putExtra("newmembers", getToBeAddMembers()));
+		Log.i("main", "SAVE");
+		Log.i("main", (getToBeAddMembers() == null?0:getToBeAddMembers().length)+"");
 		finish();
 	}
 

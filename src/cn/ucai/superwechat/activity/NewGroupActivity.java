@@ -17,6 +17,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -26,14 +27,25 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.Response;
 import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.exceptions.EaseMobException;
 
+import java.io.File;
+
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.bean.Contact;
+import cn.ucai.superwechat.bean.Group;
+import cn.ucai.superwechat.bean.Message;
+import cn.ucai.superwechat.bean.User;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
+import cn.ucai.superwechat.data.OkHttpUtils;
 import cn.ucai.superwechat.listener.OnSetAvatarListener;
+import cn.ucai.superwechat.superWeChatApplication;
+import cn.ucai.superwechat.utils.ImageUtils;
 
 public class NewGroupActivity extends BaseActivity {
 	private EditText groupNameEditText;
@@ -87,6 +99,7 @@ public class NewGroupActivity extends BaseActivity {
 					startActivity(intent);
 				} else {
 					// 进通讯录选人
+					Log.i("main", "进通讯录选人");
 					startActivityForResult(new Intent(mContext, GroupPickContactsActivity.class).putExtra("groupName", name), CREATE_NEW_GROUP);
 				}
 			}
@@ -123,11 +136,14 @@ public class NewGroupActivity extends BaseActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(resultCode != RESULT_OK){
+		Log.i("main", "OOOOOOOOOOOOKKKKKKKKKKKKKKKK");
+		if(resultCode != RESULT_OK) {
+			Log.i("main", "NNNNNNNNNNNNNNNNNOOOOOOOOOOOOOOOOO");
 			return;
 		}
-		if (resultCode == CREATE_NEW_GROUP) {
+		if (requestCode == CREATE_NEW_GROUP) {
 			//新建群组
+			Log.i("main", "NNNNNNNNNNNNNNNNNNNNNNNNNNNN");
 			setProgressDialog();
 			createNewGroup(data);
 		} else {
@@ -137,7 +153,7 @@ public class NewGroupActivity extends BaseActivity {
 
 	private void createNewGroup(final Intent data) {
 		final String st2 = getResources().getString(cn.ucai.superwechat.R.string.Failed_to_create_groups);
-		new Thread(new Runnable() {
+		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
 				// 调用sdk创建群组方法
@@ -154,24 +170,25 @@ public class NewGroupActivity extends BaseActivity {
 						membersId[i] = contacts[i].getMContactId() + ",";
 					}
 				}
-				EMGroup emGroup;
+				final EMGroup emGroup;
 				try {
-					if(checkBox.isChecked()){
+					if (checkBox.isChecked()) {
 						//创建公开群，此种方式创建的群，可以自由加入
 						//创建公开群，此种方式创建的群，用户需要申请，等群主同意后才能加入此群
-						emGroup = EMGroupManager.getInstance().createPublicGroup(groupName, desc, members, true,200);
-					}else{
+						emGroup = EMGroupManager.getInstance().createPublicGroup(groupName, desc, members, true, 200);
+					} else {
 						//创建不公开群
-						emGroup = EMGroupManager.getInstance().createPrivateGroup(groupName, desc, members, memberCheckbox.isChecked(),200);
+						emGroup = EMGroupManager.getInstance().createPrivateGroup(groupName, desc, members, memberCheckbox.isChecked(), 200);
 					}
 					String hxid = emGroup.getGroupId();
-					runOnUiThread(new Runnable() {
-						public void run() {
-							progressDialog.dismiss();
-							setResult(RESULT_OK);
-							finish();
-						}
-					});
+					createNewGroupAppserver(groupName, hxid, desc, contacts);
+//					runOnUiThread(new Runnable() {
+//						public void run() {
+//							progressDialog.dismiss();
+//							setResult(RESULT_OK);
+//							finish();
+//						}
+//					});
 				} catch (final EaseMobException e) {
 					runOnUiThread(new Runnable() {
 						public void run() {
@@ -182,8 +199,124 @@ public class NewGroupActivity extends BaseActivity {
 				}
 
 			}
-		}).start();
+		});
 	}
+
+	public final String boundary = "apiclient-" + System.currentTimeMillis();
+	public final String mimeType = "multipart/form-data;boundary=" + boundary;
+
+	private void createNewGroupAppserver(String groupName,final String hxid, String desc,final Contact[] contacts) {
+		Log.i("main", "createNewGroupAppserver");
+		final String st2 = getResources().getString(cn.ucai.superwechat.R.string.Failed_to_create_groups);
+
+		File file = new File(ImageUtils.getAvatarPath(mContext, I.AVATAR_TYPE_GROUP_PATH),
+				name + I.AVATAR_SUFFIX_JPG);
+		boolean isPublic = checkBox.isChecked();
+		boolean isInvites = memberCheckbox.isChecked();
+		User user = superWeChatApplication.getInstance().getUser();
+
+
+		OkHttpUtils<Group> utils = new OkHttpUtils<>();
+		Log.i("main", hxid.toString());
+		Log.i("main", groupName.toString());
+		Log.i("main", desc.toString());
+		Log.i("main", user.getMUserName().toString());
+		Log.i("main", isPublic + "".toString());
+		Log.i("main", isInvites + "".toString());
+		Log.i("main", user.getMUserId() + "".toString());
+
+		utils.url(superWeChatApplication.SERVER_ROOT)
+				.addParam(I.KEY_REQUEST, I.REQUEST_CREATE_GROUP)
+				.addParam(I.Group.HX_ID, hxid)
+				.addParam(I.Group.NAME, groupName)
+				.addParam(I.Group.DESCRIPTION, desc)
+				.addParam(I.Group.OWNER, user.getMUserName())
+				.addParam(I.Group.IS_PUBLIC, isPublic + "")
+				.addParam(I.Group.ALLOW_INVITES, isInvites + "")
+				.addParam(I.User.USER_ID, user.getMUserId() + "")
+				.targetClass(Group.class)
+				.addFile(file)
+				.execute(new OkHttpUtils.OnCompleteListener<Group>() {
+					@Override
+					public void onSuccess(final Group result) {
+						if (result.isResult()) {
+							if (contacts != null) {
+								addGroupMembers(result, contacts, hxid);
+								mContext.sendStickyBroadcast(new Intent("update_contact_list"));
+								progressDialog.dismiss();
+								setResult(RESULT_OK);
+								finish();
+							} else {
+								progressDialog.dismiss();
+								superWeChatApplication.getInstance().getGroupList().add(result);
+								setResult(RESULT_OK);
+								Toast.makeText(NewGroupActivity.this, R.string.Create_groups_Success, Toast.LENGTH_LONG).show();
+								finish();
+							}
+						} else {
+							runOnUiThread(new Runnable() {
+								public void run() {
+									progressDialog.dismiss();
+									Toast.makeText(NewGroupActivity.this, R.string.Create_groups_Failed, Toast.LENGTH_LONG).show();
+								}
+							});
+						}
+
+					}
+
+					@Override
+					public void onError(String error) {
+						progressDialog.dismiss();
+						Toast.makeText(NewGroupActivity.this, st2 + error, Toast.LENGTH_LONG).show();
+					}
+				});
+	}
+
+	private void addGroupMembers(final Group result,Contact[] contacts, String hxid) {
+		String userIds = "";
+		String userNames = "";
+
+
+		for (int i = 0; i < contacts.length; i++) {
+			userNames = contacts[i].getMContactCname() + ",";
+			userIds = contacts[i].getMContactId() + ",";
+		}
+
+
+		try {
+			String path = new ApiParams()
+                    .with(I.Member.USER_ID, userIds)
+                    .with(I.Member.USER_NAME, userNames)
+                    .with(I.Member.GROUP_HX_ID, hxid)
+                    .getRequestUrl(I.REQUEST_ADD_GROUP_MEMBER);
+			executeRequest(new GsonRequest<Message>(path,Message.class,addGroupMembersListener(result),errorListener()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
+	}
+
+	private Response.Listener<Message> addGroupMembersListener(final Group result) {
+		return new Response.Listener<Message>() {
+			@Override
+			public void onResponse(Message message) {
+				if (message.isResult()) {
+					progressDialog.dismiss();
+					superWeChatApplication.getInstance().getGroupList().add(result);
+					setResult(RESULT_OK);
+					Toast.makeText(NewGroupActivity.this, R.string.Create_groups_Success, Toast.LENGTH_LONG).show();
+				} else {
+					progressDialog.dismiss();
+					Toast.makeText(NewGroupActivity.this, R.string.Create_groups_Failed, Toast.LENGTH_LONG).show();
+				}
+				finish();
+			}
+		};
+	}
+
+
+
 
 	private void setProgressDialog() {
 		String st1 = getResources().getString(cn.ucai.superwechat.R.string.Is_to_create_a_group_chat);
