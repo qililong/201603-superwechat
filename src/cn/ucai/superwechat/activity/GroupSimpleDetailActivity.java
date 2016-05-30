@@ -20,20 +20,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMGroup;
-import com.easemob.chat.EMGroupInfo;
-import com.easemob.chat.EMGroupManager;
-import com.easemob.exceptions.EaseMobException;
+import cn.ucai.superwechat.bean.Group;
+import cn.ucai.superwechat.superWeChatApplication;
 
 public class GroupSimpleDetailActivity extends BaseActivity {
 	private Button btn_add_group;
 	private TextView tv_admin;
 	private TextView tv_name;
 	private TextView tv_introduction;
-	private EMGroup group;
+	private Group group;
 	private String groupid;
 	private ProgressBar progressBar;
 
@@ -46,18 +42,17 @@ public class GroupSimpleDetailActivity extends BaseActivity {
 		btn_add_group = (Button) findViewById(cn.ucai.superwechat.R.id.btn_add_to_group);
 		tv_introduction = (TextView) findViewById(cn.ucai.superwechat.R.id.tv_introduction);
 		progressBar = (ProgressBar) findViewById(cn.ucai.superwechat.R.id.loading);
-
-		EMGroupInfo groupInfo = (EMGroupInfo) getIntent().getSerializableExtra("groupinfo");
+		group = (Group) getIntent().getSerializableExtra("groupinfo");
 		String groupname = null;
-		if(groupInfo != null){
-		    groupname = groupInfo.getGroupName();
-		    groupid = groupInfo.getGroupId();
+		if(group != null){
+		    groupname = group.getMGroupName();
+		    groupid = group.getMGroupHxid();
 		}else{
-		    group = PublicGroupsSeachActivity.searchedGroup;
-		    if(group == null)
-		        return;
-		    groupname = group.getGroupName();
-		    groupid = group.getGroupId();
+//		    group = PublicGroupsSeachActivity.searchedGroup;
+//		    if(group == null)
+//		        return;
+//		    groupname = group.getGroupName();
+//		    groupid = group.getGroupId();
 		}
 		
 		tv_name.setText(groupname);
@@ -67,31 +62,31 @@ public class GroupSimpleDetailActivity extends BaseActivity {
 		    showGroupDetail();
 		    return;
 		}
-		new Thread(new Runnable() {
-
-			public void run() {
-				//从服务器获取详情
-				try {
-					group = EMGroupManager.getInstance().getGroupFromServer(groupid);
-					runOnUiThread(new Runnable() {
-						public void run() {
-							showGroupDetail();
-						}
-					});
-				} catch (final EaseMobException e) {
-					e.printStackTrace();
-					final String st1 = getResources().getString(cn.ucai.superwechat.R.string.Failed_to_get_group_chat_information);
-					runOnUiThread(new Runnable() {
-						public void run() {
-							progressBar.setVisibility(View.INVISIBLE);
-							Toast.makeText(GroupSimpleDetailActivity.this, st1+e.getMessage(), 1).show();
-						}
-					});
-				}
-				
-			}
-		}).start();
-		
+//		new Thread(new Runnable() {
+//
+//			public void run() {
+//				//从服务器获取详情
+//				try {
+//					group = EMGroupManager.getInstance().getGroupFromServer(groupid);
+//					runOnUiThread(new Runnable() {
+//						public void run() {
+//							showGroupDetail();
+//						}
+//					});
+//				} catch (final EaseMobException e) {
+//					e.printStackTrace();
+//					final String st1 = getResources().getString(cn.ucai.superwechat.R.string.Failed_to_get_group_chat_information);
+//					runOnUiThread(new Runnable() {
+//						public void run() {
+//							progressBar.setVisibility(View.INVISIBLE);
+//							Toast.makeText(GroupSimpleDetailActivity.this, st1+e.getMessage(), 1).show();
+//						}
+//					});
+//				}
+//
+//			}
+//		}).start();
+//
 	}
 	
 	//加入群聊
@@ -106,46 +101,46 @@ public class GroupSimpleDetailActivity extends BaseActivity {
 		pd.setMessage(st1);
 		pd.setCanceledOnTouchOutside(false);
 		pd.show();
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					//如果是membersOnly的群，需要申请加入，不能直接join
-					if(group.isMembersOnly()){
-					    EMGroupManager.getInstance().applyJoinToGroup(groupid, st2);
-					}else{
-					    EMGroupManager.getInstance().joinGroup(groupid);
-					}
-					runOnUiThread(new Runnable() {
-						public void run() {
-							pd.dismiss();
-							if(group.isMembersOnly())
-								Toast.makeText(GroupSimpleDetailActivity.this, st3, 0).show();
-							else
-								Toast.makeText(GroupSimpleDetailActivity.this, st4, 0).show();
-							btn_add_group.setEnabled(false);
-						}
-					});
-				} catch (final EaseMobException e) {
-					e.printStackTrace();
-					runOnUiThread(new Runnable() {
-						public void run() {
-							pd.dismiss();
-							Toast.makeText(GroupSimpleDetailActivity.this, st5+e.getMessage(), 0).show();
-						}
-					});
-				}
-			}
-		}).start();
+//		new Thread(new Runnable() {
+//			public void run() {
+//				try {
+//					//如果是membersOnly的群，需要申请加入，不能直接join
+//					if(group.isMembersOnly()){
+//					    EMGroupManager.getInstance().applyJoinToGroup(groupid, st2);
+//					}else{
+//					    EMGroupManager.getInstance().joinGroup(groupid);
+//					}
+//					runOnUiThread(new Runnable() {
+//						public void run() {
+//							pd.dismiss();
+//							if(group.isMembersOnly())
+//								Toast.makeText(GroupSimpleDetailActivity.this, st3, 0).show();
+//							else
+//								Toast.makeText(GroupSimpleDetailActivity.this, st4, 0).show();
+//							btn_add_group.setEnabled(false);
+//						}
+//					});
+//				} catch (final EaseMobException e) {
+//					e.printStackTrace();
+//					runOnUiThread(new Runnable() {
+//						public void run() {
+//							pd.dismiss();
+//							Toast.makeText(GroupSimpleDetailActivity.this, st5+e.getMessage(), 0).show();
+//						}
+//					});
+//				}
+//			}
+//		}).start();
 	}
 	
      private void showGroupDetail() {
          progressBar.setVisibility(View.INVISIBLE);
          //获取详情成功，并且自己不在群中，才让加入群聊按钮可点击
-         if(!group.getMembers().contains(EMChatManager.getInstance().getCurrentUser()))
+         if(!superWeChatApplication.getInstance().getGroupList().contains(group))
              btn_add_group.setEnabled(true);
-         tv_name.setText(group.getGroupName());
-         tv_admin.setText(group.getOwner());
-         tv_introduction.setText(group.getDescription());
+         tv_name.setText(group.getMGroupName());
+         tv_admin.setText(group.getMGroupOwner());
+         tv_introduction.setText(group.getMGroupDescription());
      }
 	
 	public void back(View view){

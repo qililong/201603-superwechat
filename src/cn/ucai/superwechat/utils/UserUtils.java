@@ -81,7 +81,7 @@ public class UserUtils {
 
 	public static void setUserBeansAvatar(String username, NetworkImageView imageView) {
 		if (username != null) {
-			setUserAvatar(getAvatarPath(username),imageView);
+			setUserAvatar(getAvatarPath(username), imageView);
 		}
 	}
 
@@ -246,5 +246,28 @@ public class UserUtils {
 			}
 		}
 		return null;
+	}
+
+	public static void setPublicGroupBeanAvatar(String hxid, NetworkImageView imageView) {
+		Log.i("main", "setGroupBeanAvatar" + hxid);
+		if (hxid != null && !hxid.isEmpty()) {
+			setPublicGroupAvatar(getPublicGroupAvatarPath(hxid), imageView);
+		}
+	}
+
+	public static String getPublicGroupAvatarPath(String hxid) {
+		if (hxid == null || hxid.isEmpty()) {
+			return null;
+		}
+		Log.i("main", I.DOWNLOAD_GROUP_AVATAR_URL + hxid);
+		return I.DOWNLOAD_GROUP_AVATAR_URL + hxid;
+	}
+
+	public static void setPublicGroupAvatar(String url, NetworkImageView imageView) {
+		if (url == null && url.isEmpty()) return;
+		imageView.setImageUrl(url, RequestManager.getImageLoader());
+		imageView.setErrorImageResId(R.drawable.group_icon);
+		imageView.setDefaultImageResId(R.drawable.group_icon);
+
 	}
 }

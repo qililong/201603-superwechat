@@ -2,6 +2,7 @@ package cn.ucai.superwechat.task;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.android.volley.Response;
 
@@ -37,7 +38,10 @@ public class DownloadPublicGroupTask extends BaseActivity {
         try {
             path = new ApiParams()
                     .with(I.Contact.USER_NAME,username)
+                    .with(I.PAGE_ID,I.PAGE_ID_DEFAULT+"")
+                    .with(I.PAGE_SIZE,I.PAGE_SIZE_DEFAULT+"")
                     .getRequestUrl(I.REQUEST_FIND_PUBLIC_GROUPS);
+            Log.i("main", path.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,6 +57,7 @@ public class DownloadPublicGroupTask extends BaseActivity {
             @Override
             public void onResponse(Group[] contacts) {
                 if (contacts != null) {
+                    Log.i("main", "responseDownloadConractListTaskLiskListener,contacts:" + contacts.length);
                     ArrayList<Group> contactList =
                             superWeChatApplication.getInstance().getPublicGroupList();
                     ArrayList<Group> list = Utils.array2List(contacts);

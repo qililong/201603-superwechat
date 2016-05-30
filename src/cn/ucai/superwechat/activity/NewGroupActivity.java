@@ -217,13 +217,6 @@ public class NewGroupActivity extends BaseActivity {
 
 
 		OkHttpUtils<Group> utils = new OkHttpUtils<>();
-		Log.i("main", hxid.toString());
-		Log.i("main", groupName.toString());
-		Log.i("main", desc.toString());
-		Log.i("main", user.getMUserName().toString());
-		Log.i("main", isPublic + "".toString());
-		Log.i("main", isInvites + "".toString());
-		Log.i("main", user.getMUserId() + "".toString());
 
 		utils.url(superWeChatApplication.SERVER_ROOT)
 				.addParam(I.KEY_REQUEST, I.REQUEST_CREATE_GROUP)
