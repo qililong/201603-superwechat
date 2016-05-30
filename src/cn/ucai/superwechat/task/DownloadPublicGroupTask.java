@@ -41,7 +41,7 @@ public class DownloadPublicGroupTask extends BaseActivity {
                     .with(I.PAGE_ID,I.PAGE_ID_DEFAULT+"")
                     .with(I.PAGE_SIZE,I.PAGE_SIZE_DEFAULT+"")
                     .getRequestUrl(I.REQUEST_FIND_PUBLIC_GROUPS);
-            Log.i("main", path.toString());
+            Log.i("main", "initPath:" + path.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,6 +63,7 @@ public class DownloadPublicGroupTask extends BaseActivity {
                     ArrayList<Group> list = Utils.array2List(contacts);
                     for (Group g : list) {
                         if (!contactList.contains(g)) {
+                            Log.i("main", "groupName:" + g.getMGroupName());
                             contactList.add(g);
                         }
                     }

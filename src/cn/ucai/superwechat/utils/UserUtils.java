@@ -259,7 +259,6 @@ public class UserUtils {
 		if (hxid == null || hxid.isEmpty()) {
 			return null;
 		}
-		Log.i("main", I.DOWNLOAD_GROUP_AVATAR_URL + hxid);
 		return I.DOWNLOAD_GROUP_AVATAR_URL + hxid;
 	}
 

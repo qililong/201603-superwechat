@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,15 +30,19 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SectionIndexer;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
+import com.easemob.util.EMLog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.bean.Group;
@@ -46,7 +51,7 @@ import cn.ucai.superwechat.task.DownloadPublicGroupTask;
 import cn.ucai.superwechat.utils.UserUtils;
 
 public class PublicGroupsActivity extends BaseActivity {
-	private ProgressBar pb;
+    private ProgressBar pb;
 	private ListView listView;
 	private GroupsAdapter adapter;
 	
@@ -61,6 +66,9 @@ public class PublicGroupsActivity extends BaseActivity {
     private ProgressBar footLoadingPB;
     private TextView footLoadingText;
     private Button searchBtn;
+
+
+
     
 
 	@Override
@@ -69,19 +77,15 @@ public class PublicGroupsActivity extends BaseActivity {
 		setContentView(R.layout.activity_public_groups);
 
         initView();
-
         //获取及显示数据
         setListener();
-        loadAndShowData();
-        registerPublicGroupChangedReceiver();
-
-        
 	}
 
 
     private void setListener() {
         setItemClickListener();
         setScrollListener();
+        registerPublicGroupChangedReceiver();
     }
 
     private void setScrollListener() {
@@ -94,6 +98,7 @@ public class PublicGroupsActivity extends BaseActivity {
                         int lasPos = view.getLastVisiblePosition();
                         if (hasMoreData && !isLoading && lasPos == listView.getCount() - 1) {
                             pageId++;
+                            Log.i("main", pageId + "");
                             new DownloadPublicGroupTask(PublicGroupsActivity.this, superWeChatApplication.getInstance().getUserName(),
                                     pageId, pagesize).execute();
                             loadAndShowData();
@@ -145,31 +150,25 @@ public class PublicGroupsActivity extends BaseActivity {
 	}
 	
 	private void loadAndShowData(){
-
-
-
                 try {
-                    isLoading = true;
-                    final ArrayList<Group> publicGroupLis = superWeChatApplication.getInstance().getPublicGroupList();
-                    Log.i("main", "loadAndShowData,publicGroupLis:" + publicGroupLis.size());
-        //获取group list
-
-
+                        isLoading = true;
+                        final ArrayList<Group> publicGroupLis = superWeChatApplication.getInstance().getPublicGroupList();
+                        Log.i("main", "loadAndShowData,publicGroupLis:" + publicGroupLis.size());
                     for (Group group : publicGroupLis) {
                         if (!groupsList.contains(group)) {
                             groupsList.add(group);
-                            Log.i("main", group.toString());
+                            Log.i("main", "groupsList:" + groupsList.size());
                         }
                     }
                     runOnUiThread(new Runnable() {
-
                         public void run() {
                             searchBtn.setVisibility(View.VISIBLE);
 //                            groupsList.addAll(returnGroups);
-                            if(publicGroupLis.size() != 0){
+                            if(publicGroupLis.size() != 0) {
                                 //获取cursor
 //                                cursor = result.getCursor();
-                                if(publicGroupLis.size() < publicGroupLis.size())
+                                if (groupsList.size() < publicGroupLis.size())
+                                    Log.i("main", "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
                                     footLoadingLayout.setVisibility(View.VISIBLE);
                             }
                             if(isFirstLoading){
@@ -179,13 +178,16 @@ public class PublicGroupsActivity extends BaseActivity {
                                 adapter = new GroupsAdapter(PublicGroupsActivity.this, 1, groupsList);
                                 listView.setAdapter(adapter);
                             }else{
-                                if(publicGroupLis.size() < pagesize * (pageId + 1)){
+                                if(groupsList.size() < pagesize * (pageId + 1)){
+                                    Log.i("main", "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
                                     hasMoreData = false;
                                     footLoadingLayout.setVisibility(View.VISIBLE);
                                     footLoadingPB.setVisibility(View.GONE);
                                     footLoadingText.setText("No more data");
                                 }
+                                Log.i("main", "groupsListSize:" + groupsList.size());
                                 adapter.notifyDataSetChanged();
+                                Log.i("main", "OVER");
                             }
                             isLoading = false;
                         }
@@ -207,14 +209,29 @@ public class PublicGroupsActivity extends BaseActivity {
 	 * adapter
 	 *
 	 */
-	private class GroupsAdapter extends BaseAdapter {
+	private class GroupsAdapter extends BaseAdapter implements SectionIndexer {
+
+        private   final  String TAG = GroupsAdapter.class.getName();
 
 		private LayoutInflater inflater;
         ArrayList<Group> mGroupList;
 
+        ArrayList<Group> copyGroupList;
+        ArrayList<String> list;
+        private MyFilter myFilter;
+        Context context;
+
+        private SparseIntArray positionOfSection;
+        private SparseIntArray sectionOfPosition;
+        private boolean notiyfyByFilter;
+
 		public GroupsAdapter(Context context, int res, ArrayList<Group> groups) {
 			this.inflater = LayoutInflater.from(context);
             this.mGroupList = groups;
+            this.context = context;
+            copyGroupList = new ArrayList<>();
+            this.copyGroupList = groups;
+            Log.i("main", "groups:" + groups.size());
         }
 
         @Override
@@ -237,12 +254,129 @@ public class PublicGroupsActivity extends BaseActivity {
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.row_group, null);
 			}
-
 			((TextView) convertView.findViewById(R.id.name)).setText(mGroupList.get(position).getMGroupName());
-            UserUtils.setPublicGroupBeanAvatar(mGroupList.get(position).getMGroupHxid(),(NetworkImageView)convertView.findViewById(R.id.avatar));
-			return convertView;
+            UserUtils.setPublicGroupBeanAvatar(mGroupList.get(position).getMGroupHxid(),
+                    (NetworkImageView) convertView.findViewById(R.id.avatar));
+            Log.i("main", "YYYYYYYYYYYYYYYYYYYYYYYYY");
+            return convertView;
 		}
-	}
+        @Override
+        public Object[] getSections() {
+            positionOfSection = new SparseIntArray();
+            sectionOfPosition = new SparseIntArray();
+            int count = getCount();
+            list = new ArrayList<String>();
+            list.add(context.getString(cn.ucai.superwechat.R.string.search_header));
+            positionOfSection.put(0, 0);
+            sectionOfPosition.put(0, 0);
+            for (int i = 1; i < count; i++) {
+
+                String letter = getItem(i).getHeader();
+                Log.e(TAG, "contactadapter getsection getHeader:" + letter + " name:" + getItem(i).getMGroupName());
+                int section = list.size() - 1;
+                if (list.get(section) != null && !list.get(section).equals(letter)) {
+                    list.add(letter);
+                    section++;
+                    positionOfSection.put(section, i);
+                }
+                sectionOfPosition.put(i, section);
+            }
+            return list.toArray(new String[list.size()]);
+        }
+
+        @Override
+        public int getPositionForSection(int sectionIndex) {
+            return positionOfSection.get(sectionIndex);
+        }
+
+        @Override
+        public int getSectionForPosition(int position) {
+            return sectionOfPosition.get(position);
+        }
+
+        public Filter getFilter() {
+            if(myFilter==null){
+                myFilter = new MyFilter(mGroupList);
+            }
+            return myFilter;
+        }
+
+        private class  MyFilter extends Filter{
+            List<Group> mOriginalList = null;
+
+            public MyFilter(List<Group> myList) {
+                this.mOriginalList = myList;
+            }
+
+            @Override
+            protected synchronized FilterResults performFiltering(CharSequence prefix) {
+                FilterResults results = new FilterResults();
+                if(mOriginalList==null){
+                    mOriginalList = new ArrayList<Group>();
+                }
+                EMLog.d(TAG, "contacts original size: " + mOriginalList.size());
+                EMLog.d(TAG, "contacts copy size: " + copyGroupList.size());
+
+                if(prefix==null || prefix.length()==0){
+                    results.values = copyGroupList;
+                    results.count = copyGroupList.size();
+                }else{
+                    String prefixString = prefix.toString();
+                    final int count = mOriginalList.size();
+                    final ArrayList<Group> newValues = new ArrayList<Group>();
+                    for(int i=0;i<count;i++){
+                        final Group user = mOriginalList.get(i);
+                        String username = user.getMGroupName();
+
+                        if(username.contains(prefixString) || user.getMGroupHxid().contains(prefixString)){
+                            newValues.add(user);
+                        }
+                        else{
+                            final String[] words = username.split(" ");
+                            final int wordCount = words.length;
+
+                            // Start at index 0, in case valueText starts with space(s)
+                            for (int k = 0; k < wordCount; k++) {
+                                if (words[k].contains(prefixString)) {
+                                    newValues.add(user);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    results.values=newValues;
+                    results.count=newValues.size();
+                }
+                EMLog.d(TAG, "contacts filter results size: " + results.count);
+                return results;
+            }
+
+            @Override
+            protected synchronized void publishResults(CharSequence constraint,
+                                                       FilterResults results) {
+                mGroupList.clear();
+                mGroupList.addAll((List<Group>)results.values);
+                EMLog.d(TAG, "publish contacts filter results size: " + results.count);
+                if (results.count > 0) {
+                    notiyfyByFilter = true;
+                    notifyDataSetChanged();
+                    notiyfyByFilter = false;
+                } else {
+                    notifyDataSetInvalidated();
+                }
+            }
+        }
+
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            if(!notiyfyByFilter){
+                copyGroupList.clear();
+                copyGroupList.addAll(mGroupList);
+            }
+        }
+    }
 	
 	public void back(View view){
 		finish();

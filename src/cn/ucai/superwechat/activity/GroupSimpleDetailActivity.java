@@ -20,9 +20,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.toolbox.NetworkImageView;
+
+import cn.ucai.superwechat.I;
+import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.bean.Group;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.superWeChatApplication;
+import cn.ucai.superwechat.utils.UserUtils;
 
 public class GroupSimpleDetailActivity extends BaseActivity {
 	private Button btn_add_group;
@@ -32,6 +41,7 @@ public class GroupSimpleDetailActivity extends BaseActivity {
 	private Group group;
 	private String groupid;
 	private ProgressBar progressBar;
+	NetworkImageView avatar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +53,18 @@ public class GroupSimpleDetailActivity extends BaseActivity {
 		tv_introduction = (TextView) findViewById(cn.ucai.superwechat.R.id.tv_introduction);
 		progressBar = (ProgressBar) findViewById(cn.ucai.superwechat.R.id.loading);
 		group = (Group) getIntent().getSerializableExtra("groupinfo");
+
+		avatar = (NetworkImageView) findViewById(R.id.avatar);
 		String groupname = null;
 		if(group != null){
 		    groupname = group.getMGroupName();
 		    groupid = group.getMGroupHxid();
 		}else{
-//		    group = PublicGroupsSeachActivity.searchedGroup;
-//		    if(group == null)
-//		        return;
-//		    groupname = group.getGroupName();
-//		    groupid = group.getGroupId();
+		    group = PublicGroupsSeachActivity.searchedGroup;
+		    if(group == null)
+		        return;
+		    groupname = group.getMGroupName();
+		    groupid = group.getMGroupHxid();
 		}
 		
 		tv_name.setText(groupname);
@@ -62,6 +74,17 @@ public class GroupSimpleDetailActivity extends BaseActivity {
 		    showGroupDetail();
 		    return;
 		}
+
+		try {
+			String path = new ApiParams()
+					.with(I.Group.HX_ID, groupid)
+					.getRequestUrl(I.REQUEST_FIND_PUBLIC_GROUP_BY_HXID);
+			executeRequest(new GsonRequest<Group>(path,Group.class,responeGetPublicGroupListenner(),errorListener()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+
 //		new Thread(new Runnable() {
 //
 //			public void run() {
@@ -88,7 +111,22 @@ public class GroupSimpleDetailActivity extends BaseActivity {
 //		}).start();
 //
 	}
-	
+	private Response.Listener<Group> responeGetPublicGroupListenner() {
+		final String st1 = getResources().getString(cn.ucai.superwechat.R.string.Failed_to_get_group_chat_information);
+		return new Response.Listener<Group>() {
+			@Override
+			public void onResponse(Group group) {
+				if (group != null) {
+					showGroupDetail();
+				} else {
+					progressBar.setVisibility(View.INVISIBLE);
+					Toast.makeText(GroupSimpleDetailActivity.this, st1, Toast.LENGTH_LONG);
+				}
+			}
+		};
+	}
+
+
 	//加入群聊
 	public void addToGroup(View view){
 		String st1 = getResources().getString(cn.ucai.superwechat.R.string.Is_sending_a_request);
@@ -138,6 +176,7 @@ public class GroupSimpleDetailActivity extends BaseActivity {
          //获取详情成功，并且自己不在群中，才让加入群聊按钮可点击
          if(!superWeChatApplication.getInstance().getGroupList().contains(group))
              btn_add_group.setEnabled(true);
+		 UserUtils.setPublicGroupBeanAvatar(group.getMGroupHxid(),avatar);
          tv_name.setText(group.getMGroupName());
          tv_admin.setText(group.getMGroupOwner());
          tv_introduction.setText(group.getMGroupDescription());

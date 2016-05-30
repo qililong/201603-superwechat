@@ -219,4 +219,7 @@ public interface I {
 			+ "=" + REQUEST_DOWNLOAD_GROUP_AVATAR + "&" + AVATAR_TYPE + "=";
 
 	String DOWNLOAD_GROUP_AVATAR_URL = "http://10.0.2.2:8080/SuperWeChatServer/Server?request=download_group_avatar&avatarType=";
+
+	/** 客户端发送的根据群组环信id查找公开群组请求 */
+	String REQUEST_FIND_PUBLIC_GROUP_BY_HXID 		= 		"find_public_group_by_group_hxid";
 }
