@@ -19,6 +19,7 @@ import cn.ucai.superwechat.R;
 import cn.ucai.superwechat.applib.controller.HXSDKHelper;
 import cn.ucai.superwechat.bean.Contact;
 import cn.ucai.superwechat.bean.Group;
+import cn.ucai.superwechat.bean.Member;
 import cn.ucai.superwechat.bean.User;
 import cn.ucai.superwechat.data.RequestManager;
 import cn.ucai.superwechat.domain.EMUser;
@@ -268,5 +269,32 @@ public class UserUtils {
 		imageView.setErrorImageResId(R.drawable.group_icon);
 		imageView.setDefaultImageResId(R.drawable.group_icon);
 
+	}
+
+	public static ArrayList<Member> getGroupMember(String name) {
+		ArrayList<Member> members = superWeChatApplication.getInstance().getGroupMembers().get(name);
+		if (members != null) {
+			return members;
+		}
+		return null;
+	}
+
+	public static Member getGroupMember(String hxid, String name) {
+		ArrayList<Member> members = superWeChatApplication.getInstance().getGroupMembers().get(hxid);
+		if (members != null) {
+			for (Member member : members) {
+				if (member.getMUserName().equals(name)) {
+					return member;
+				}
+			}
+		}
+		return null;
+	}
+
+	public static void setGroupMemberNick(String hxid, String name, TextView textView) {
+		Member groupMember = getGroupMember(hxid, name);
+		if (groupMember != null) {
+			setUserBeanNick(groupMember, textView);
+		}
 	}
 }

@@ -24,6 +24,8 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.toolbox.NetworkImageView;
+import com.easemob.chat.EMGroupManager;
+import com.easemob.exceptions.EaseMobException;
 
 import cn.ucai.superwechat.I;
 import cn.ucai.superwechat.R;
@@ -139,36 +141,40 @@ public class GroupSimpleDetailActivity extends BaseActivity {
 		pd.setMessage(st1);
 		pd.setCanceledOnTouchOutside(false);
 		pd.show();
-//		new Thread(new Runnable() {
-//			public void run() {
-//				try {
-//					//如果是membersOnly的群，需要申请加入，不能直接join
-//					if(group.isMembersOnly()){
-//					    EMGroupManager.getInstance().applyJoinToGroup(groupid, st2);
-//					}else{
-//					    EMGroupManager.getInstance().joinGroup(groupid);
-//					}
-//					runOnUiThread(new Runnable() {
-//						public void run() {
-//							pd.dismiss();
-//							if(group.isMembersOnly())
-//								Toast.makeText(GroupSimpleDetailActivity.this, st3, 0).show();
-//							else
-//								Toast.makeText(GroupSimpleDetailActivity.this, st4, 0).show();
-//							btn_add_group.setEnabled(false);
-//						}
-//					});
-//				} catch (final EaseMobException e) {
-//					e.printStackTrace();
-//					runOnUiThread(new Runnable() {
-//						public void run() {
-//							pd.dismiss();
-//							Toast.makeText(GroupSimpleDetailActivity.this, st5+e.getMessage(), 0).show();
-//						}
-//					});
-//				}
-//			}
-//		}).start();
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					//如果是membersOnly的群，需要申请加入，不能直接join
+					if(group.getMGroupAllowInvites()){
+					    EMGroupManager.getInstance().applyJoinToGroup(groupid, st2);
+					}else{
+						try {
+							EMGroupManager.getInstance().joinGroup(groupid);
+						} catch (EaseMobException e) {
+							e.printStackTrace();
+						}
+					}
+					runOnUiThread(new Runnable() {
+						public void run() {
+							pd.dismiss();
+							if(group.getMGroupAllowInvites())
+								Toast.makeText(GroupSimpleDetailActivity.this, st3, Toast.LENGTH_SHORT).show();
+							else
+								Toast.makeText(GroupSimpleDetailActivity.this, st4, Toast.LENGTH_SHORT).show();
+							btn_add_group.setEnabled(false);
+						}
+					});
+				} catch (final EaseMobException e) {
+					e.printStackTrace();
+					runOnUiThread(new Runnable() {
+						public void run() {
+							pd.dismiss();
+							Toast.makeText(GroupSimpleDetailActivity.this, st5+e.getMessage(), 0).show();
+						}
+					});
+				}
+			}
+		}).start();
 	}
 	
      private void showGroupDetail() {
