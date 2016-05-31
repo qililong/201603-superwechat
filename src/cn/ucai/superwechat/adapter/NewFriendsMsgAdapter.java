@@ -35,10 +35,16 @@ import com.easemob.chat.EMGroupManager;
 
 import java.util.List;
 
+import cn.ucai.superwechat.I;
+import cn.ucai.superwechat.activity.NewFriendsMsgActivity;
+import cn.ucai.superwechat.bean.Group;
 import cn.ucai.superwechat.bean.User;
+import cn.ucai.superwechat.data.ApiParams;
+import cn.ucai.superwechat.data.GsonRequest;
 import cn.ucai.superwechat.db.InviteMessgeDao;
 import cn.ucai.superwechat.domain.InviteMessage;
 import cn.ucai.superwechat.domain.InviteMessage.InviteMesageStatus;
+import cn.ucai.superwechat.task.DownloadGroupMemberTask;
 import cn.ucai.superwechat.utils.UserUtils;
 
 public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
@@ -87,7 +93,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 			}
 
 			holder.reason.setText(msg.getReason());
-			holder.name.setText(msg.getFrom());
+//			holder.name.setText(msg.getFrom());
 			// holder.time.setText(DateUtils.getTimestampString(new
 			// Date(msg.getTime())));
 			if (msg.getStatus() == InviteMesageStatus.BEAGREED) {
@@ -129,12 +135,35 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 
 			// 设置用户头像
 			UserUtils.setUserBeansAvatar(msg.getFrom(), holder.avator);
-			UserUtils.setUserBeanNick(msg.getFrom(), holder.name);
+			try {
+				String path = new ApiParams()
+                        .with(I.User.USER_NAME, msg.getFrom())
+                        .getRequestUrl(I.REQUEST_FIND_USER);
+				Log.i("main", path.toString());
+				((NewFriendsMsgActivity)(context)).executeRequest(new GsonRequest<User>(path, User.class,
+						resopnsGetUserListener(holder.name), ((NewFriendsMsgActivity) (context)).errorListener()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 		}
 
 		return convertView;
 	}
+
+	private Response.Listener<User> resopnsGetUserListener(final TextView name) {
+		return new Response.Listener<User>() {
+			@Override
+			public void onResponse(User user) {
+				if (user != null && !user.isResult()) {
+					name.setText(user.getMUserNick());
+				} else {
+					name.setText(user.getMUserName());
+				}
+			}
+		};
+	}
+
 
 	private Response.Listener<User> serUserBeansAvatarListener(final TextView name) {
 		return new Response.Listener<User>() {
@@ -167,10 +196,17 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 			public void run() {
 				// 调用sdk的同意方法
 				try {
-					if(msg.getGroupId() == null) //同意好友请求
-						EMChatManager.getInstance().acceptInvitation(msg.getFrom());
-					else //同意加群申请
-					    EMGroupManager.getInstance().acceptApplication(msg.getFrom(), msg.getGroupId());
+					if(msg.getGroupId() == null){ //同意好友请求
+						EMChatManager.getInstance().acceptInvitation(msg.getFrom());}
+					else { //同意加群申请
+						EMGroupManager.getInstance().acceptApplication(msg.getFrom(), msg.getGroupId());
+						String path = new ApiParams()
+								.with(I.Member.USER_NAME, msg.getFrom())
+								.with(I.Member.GROUP_HX_ID, msg.getGroupId())
+								.getRequestUrl(I.REQUEST_ADD_GROUP_MEMBER_BY_USERNAME);
+						((NewFriendsMsgActivity)context).executeRequest(new GsonRequest<Group>(path,Group.class,
+								responseAddGroupMemberListenner(),((NewFriendsMsgActivity)context).errorListener()));
+					}
 					((Activity) context).runOnUiThread(new Runnable() {
 
 						@Override
@@ -202,6 +238,17 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		}).start();
 	}
 
+	private Response.Listener<Group> responseAddGroupMemberListenner() {
+		return new Response.Listener<Group>() {
+			@Override
+			public void onResponse(Group group) {
+				if (group != null && group.isResult()) {
+					new DownloadGroupMemberTask(context, group.getMGroupHxid());
+				}
+			}
+		};
+	}
+
 	private static class ViewHolder {
 		NetworkImageView avator;
 		TextView name;
@@ -211,5 +258,6 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		TextView groupname;
 		// TextView time;
 	}
+
 
 }

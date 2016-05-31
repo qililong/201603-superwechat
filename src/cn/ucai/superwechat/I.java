@@ -183,6 +183,8 @@ public interface I {
 	String REQUEST_CREATE_GROUP			 			= 		"create_group";
 	/** 客户端发送的添加群成员请求 */
 	String REQUEST_ADD_GROUP_MEMBER 				= 		"add_group_member";
+	/** 客户端发送的添加群成员请求 */
+	String REQUEST_ADD_GROUP_MEMBER_BY_USERNAME		= 		"add_group_member_by_username";
 	/** 客户端发送的添加多个群成员请求 */
 	String REQUEST_ADD_GROUP_MEMBERS		 		= 		"add_group_members";
 	/** 客户端发送的更新群名称请求 */

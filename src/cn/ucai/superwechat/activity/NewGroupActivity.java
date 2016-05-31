@@ -328,4 +328,5 @@ public class NewGroupActivity extends BaseActivity {
 		name = System.currentTimeMillis() + "";
 		return name;
 	}
+
 }
