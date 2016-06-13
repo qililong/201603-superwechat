@@ -8,17 +8,23 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dip">
+        android:layout_height="50dp"
+        android:background="@drawable/button_register_bg">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/back"
+            android:layout_marginLeft="20dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="超级微信"
+            android:text="账户登录"
             android:textSize="25dp"
             android:textColor="#000"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:drawableLeft="@drawable/mobile"/>
+            android:background="#fff"/>
     </RelativeLayout>
 
     <LinearLayout
@@ -30,10 +36,9 @@
         android:orientation="vertical" >
 
         <RelativeLayout
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:background="#fff" >
 
             <ImageView
@@ -60,9 +65,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
             android:background="#fff" >
 
             <ImageView
@@ -90,9 +92,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
             android:background="#fff" >
 
             <ImageView
@@ -121,9 +120,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
             android:background="#fff" >
 
             <ImageView
@@ -152,9 +148,6 @@
             android:id="@+id/rl"
             android:layout_width="match_parent"
             android:layout_height="54dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
             android:background="#fff" >
 
             <ImageView
@@ -187,20 +180,7 @@
             android:layout_marginTop="20dp"
             android:orientation="horizontal" >
 
-            <Button
-                android:id="@+id/btnlogin"
-                android:layout_weight="3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/btn_white_pressed"
-                android:paddingBottom="7dp"
-                android:paddingTop="7dp"
-                android:text="@string/login"
-                android:textColor="#000"
-                android:textSize="20sp" />
+
             <Button
                 android:id="@+id/btnregister"
                 android:layout_weight="2"
@@ -209,10 +189,10 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/button_login_bg"
+                android:background="#d75b13"
                 android:paddingBottom="7dp"
                 android:paddingTop="7dp"
-                android:text="@string/register"
+                android:text="免费注册"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
         </LinearLayout>

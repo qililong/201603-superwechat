@@ -67,7 +67,7 @@
         <activity
             android:name="cn.ucai.fulicenter.activity.LoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide" 
+            android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustResize|stateVisible">
         </activity>
 
