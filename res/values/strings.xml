@@ -306,6 +306,7 @@
     <string name="toast_updatephoto_success">更新头像成功!</string>
     <string name="toast_updatephoto_fail">更新头像失败!</string>
     <string name="send_message">发送消息</string>
+    <string name="action_settings">Settings</string>
     <string name="Delete_successfully">删除成功</string>
     <string name="User_name_cannot_be_wd">用户名只能为数字字母下划线！</string>
     <string name="upload_avatar_failed">上传头像失败!</string>
