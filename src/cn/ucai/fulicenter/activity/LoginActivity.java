@@ -57,9 +57,7 @@ import cn.ucai.fulicenter.db.UserDao;
 import cn.ucai.fulicenter.domain.EMUser;
 import cn.ucai.fulicenter.listener.OnSetAvatarListener;
 import cn.ucai.fulicenter.superWeChatApplication;
-import cn.ucai.fulicenter.task.DownloadAllGroupTask;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
-import cn.ucai.fulicenter.task.DownloadPublicGroupTask;
 import cn.ucai.fulicenter.utils.CommonUtils;
 import cn.ucai.fulicenter.utils.MD5;
 import cn.ucai.fulicenter.utils.Utils;
@@ -264,9 +262,7 @@ public class LoginActivity extends BaseActivity {
 			runOnUiThread(new Runnable() {
 				@Override
 				public void run() {
-					new DownloadAllGroupTask(mContext, currentUsername).execute();
 					new DownloadContactListTask(mContext, currentUsername).execute();
-					new DownloadPublicGroupTask(mContext, currentUsername, I.PAGE_ID_DEFAULT, I.PAGE_SIZE_DEFAULT).execute();
 				}
 			});
 			// 处理好友和群组

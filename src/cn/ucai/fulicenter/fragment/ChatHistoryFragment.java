@@ -222,14 +222,6 @@ public class ChatHistoryFragment extends Fragment {
 				resultList.add(user);
 			}
 		}
-		for(EMGroup group : EMGroupManager.getInstance().getAllGroups()){
-			EMConversation conversation = EMChatManager.getInstance().getConversation(group.getGroupId());
-			if(conversation.getMsgCount() > 0){
-				resultList.add(group);
-			}
-			
-		}
-		
 		// 排序
 		sortUserByLastChatTime(resultList);
 		return resultList;

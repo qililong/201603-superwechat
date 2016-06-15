@@ -25,8 +25,6 @@ import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMChatRoom;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMConversation.EMConversationType;
 import com.easemob.chat.EMGroup;
@@ -45,7 +43,6 @@ import cn.ucai.fulicenter.Constant;
 import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
-import cn.ucai.fulicenter.bean.Group;
 import cn.ucai.fulicenter.domain.RobotUser;
 import cn.ucai.fulicenter.utils.DateUtils;
 import cn.ucai.fulicenter.utils.SmileUtils;
@@ -101,15 +98,9 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		String username = conversation.getUserName();
 		if (conversation.getType() == EMConversationType.GroupChat) {
 			// 群聊消息，显示群聊头像
-			UserUtils.setGroupBeanAvatar(username,holder.avatar);
-//			holder.avatar.setImageResource(R.drawable.group_icon);
-//			EMGroup group = EMGroupManager.getInstance().getGroup(username);
-			Group group = UserUtils.getGroupBeanFromHXID(username);
-			holder.name.setText(group != null ? group.getMGroupName() : username);
+
 		} else if(conversation.getType() == EMConversationType.ChatRoom){
-		    holder.avatar.setImageResource(R.drawable.group_icon);
-            EMChatRoom room = EMChatManager.getInstance().getChatRoom(username);
-            holder.name.setText(room != null && !TextUtils.isEmpty(room.getName()) ? room.getName() : username);
+
 		}else {
 		    UserUtils.setUserBeanAvatar(username, holder.avatar);
 			if (username.equals(Constant.GROUP_USERNAME)) {

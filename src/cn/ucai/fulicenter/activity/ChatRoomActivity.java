@@ -13,8 +13,6 @@
  */
 package cn.ucai.fulicenter.activity;
 
-import java.util.List;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -23,12 +21,15 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMChatRoom;
+
+import java.util.List;
+
 import cn.ucai.fulicenter.adapter.ChatRoomAdapter;
 
 public class ChatRoomActivity extends BaseActivity {
@@ -53,17 +54,7 @@ public class ChatRoomActivity extends BaseActivity {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				if(position == 1) {
-					// 添加公开群
-					startActivityForResult(new Intent(ChatRoomActivity.this, PublicChatRoomsActivity.class), 0);
-				} else {
-					// 进入群聊
-					Intent intent = new Intent(ChatRoomActivity.this, ChatActivity.class);
-					// it is group chat
-					intent.putExtra("chatType", ChatActivity.CHATTYPE_CHATROOM);
-					intent.putExtra("groupId", chatRoomAdapter.getItem(position - 2).getId());
-					startActivityForResult(intent, 0);
-				}
+
 			}
 
 		});
@@ -108,9 +99,7 @@ public class ChatRoomActivity extends BaseActivity {
 	/**
 	 * 进入公开群聊列表
 	 */
-	public void onPublicGroups(View view) {
-		startActivity(new Intent(this, PublicGroupsActivity.class));
-	}
+
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

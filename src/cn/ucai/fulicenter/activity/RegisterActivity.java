@@ -69,7 +69,7 @@ public class RegisterActivity extends BaseActivity {
 
 	private void setListener() {
 		setRegisterListener();
-		setLoginListener();
+//		setLoginListener();
 		setAvatarListener();
 	}
 
@@ -89,14 +89,14 @@ public class RegisterActivity extends BaseActivity {
 		avatarName = System.currentTimeMillis() + "";
 		return avatarName;
 	}
-	private void setLoginListener() {
-		findViewById(R.id.btnlogin).setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
-	}
+//	private void setLoginListener() {
+//		findViewById(R.id.btnlogin).setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				finish();
+//			}
+//		});
+//	}
 
 	private void initView() {
 		userNameEditText = (EditText) findViewById(cn.ucai.fulicenter.R.id.username);

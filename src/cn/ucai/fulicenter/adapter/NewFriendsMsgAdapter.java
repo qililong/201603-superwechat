@@ -31,20 +31,17 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.chat.EMChatManager;
-import com.easemob.chat.EMGroupManager;
 
 import java.util.List;
 
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.activity.NewFriendsMsgActivity;
-import cn.ucai.fulicenter.bean.Group;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
 import cn.ucai.fulicenter.db.InviteMessgeDao;
 import cn.ucai.fulicenter.domain.InviteMessage;
 import cn.ucai.fulicenter.domain.InviteMessage.InviteMesageStatus;
-import cn.ucai.fulicenter.task.DownloadGroupMemberTask;
 import cn.ucai.fulicenter.utils.UserUtils;
 
 public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
@@ -198,15 +195,6 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 				try {
 					if(msg.getGroupId() == null){ //同意好友请求
 						EMChatManager.getInstance().acceptInvitation(msg.getFrom());}
-					else { //同意加群申请
-						EMGroupManager.getInstance().acceptApplication(msg.getFrom(), msg.getGroupId());
-						String path = new ApiParams()
-								.with(I.Member.USER_NAME, msg.getFrom())
-								.with(I.Member.GROUP_HX_ID, msg.getGroupId())
-								.getRequestUrl(I.REQUEST_ADD_GROUP_MEMBER_BY_USERNAME);
-						((NewFriendsMsgActivity)context).executeRequest(new GsonRequest<Group>(path,Group.class,
-								responseAddGroupMemberListenner(),((NewFriendsMsgActivity)context).errorListener()));
-					}
 					((Activity) context).runOnUiThread(new Runnable() {
 
 						@Override
@@ -238,16 +226,7 @@ public class NewFriendsMsgAdapter extends ArrayAdapter<InviteMessage> {
 		}).start();
 	}
 
-	private Response.Listener<Group> responseAddGroupMemberListenner() {
-		return new Response.Listener<Group>() {
-			@Override
-			public void onResponse(Group group) {
-				if (group != null && group.isResult()) {
-					new DownloadGroupMemberTask(context, group.getMGroupHxid());
-				}
-			}
-		};
-	}
+
 
 	private static class ViewHolder {
 		NetworkImageView avator;

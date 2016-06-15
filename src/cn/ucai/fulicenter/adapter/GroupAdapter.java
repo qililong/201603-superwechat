@@ -30,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
 import com.easemob.util.EMLog;
 
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ import java.util.List;
 
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.Group;
-import cn.ucai.fulicenter.utils.UserUtils;
 
 public class GroupAdapter extends BaseAdapter implements SectionIndexer {
 
@@ -135,9 +133,7 @@ public class GroupAdapter extends BaseAdapter implements SectionIndexer {
 			if (convertView == null) {
 				convertView = inflater.inflate(R.layout.row_group, null);
 			}
-			Log.i("main", "Adaper");
 			((TextView) convertView.findViewById(R.id.name)).setText(groupList.get(position - 3).getMGroupName());
-			UserUtils.setGroupBeanAvatar(groupList.get(position-3).getMGroupHxid(), ((NetworkImageView) convertView.findViewById(R.id.avatar)));
 		}
 
 		return convertView;

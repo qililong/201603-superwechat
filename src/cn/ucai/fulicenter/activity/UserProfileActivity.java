@@ -98,16 +98,6 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			tvUsername.setText(superWeChatApplication.getInstance().getUserName());
 			UserUtils.setCurrentUserBeanNick(tvNickName);
 			UserUtils.setCurrentUserAvatar(headAvatar);
-		} else {
-			if (groupId != null) {
-				UserUtils.setGroupMemberNick(groupId,username,tvNickName);
-				UserUtils.setUserBeanAvatar(username,headAvatar);
-			} else {
-				UserUtils.setUserBeanNick(username, tvNickName);
-				UserUtils.setUserBeanAvatar(username, headAvatar);
-			}
-			tvUsername.setText(username);
-//			asyncFetchUserInfo(username);
 		}
 	}
 
