@@ -11,12 +11,11 @@ apply plugin: 'com.android.application'
 dependencies {
     compile fileTree(include: '*.jar', dir: 'libs')
     compile files('libs/gson-2.2.4.jar')
-    compile files('libs/okhttp-2.7.5.jar')
-    compile files('libs/okio-1.6.0.jar')
-    compile files('libs/volley.jar')
-    compile files('libs/okhttp-urlconnection-2.7.5.jar')
-    compile files('libs/jackson-core-asl-1.9.11 .jar')
-    compile files('libs/okhttp-urlconnection-2.7.5.jar')
+    compile files('libshttp-2.7.5.jar')
+    compile files('libsio-1.6.0.jar')
+    compile files('libsolley.jar')
+    compile files('libshttp-urlconnection-2.7.5.jar')
+    compile files('libs/jackson-core-asl-1.9.11.jar')
 }
 
 android {

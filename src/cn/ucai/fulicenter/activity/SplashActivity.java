@@ -38,10 +38,10 @@ public class SplashActivity extends BaseActivity {
 		super.onCreate(arg0);
 
 		rootLayout = (RelativeLayout) findViewById(cn.ucai.fulicenter.R.id.splash_root);
-		versionText = (TextView) findViewById(cn.ucai.fulicenter.R.id.tv_version);
+//		versionText = (TextView) findViewById(cn.ucai.fulicenter.R.id.tv_version);
 		mContext = this;
 
-		versionText.setText(getVersion());
+//		versionText.setText(getVersion());
 		AlphaAnimation animation = new AlphaAnimation(0.3f, 1.0f);
 		animation.setDuration(1500);
 		rootLayout.startAnimation(animation);
@@ -78,16 +78,16 @@ public class SplashActivity extends BaseActivity {
 						}
 					}
 					//进入主页面
-					startActivity(new Intent(SplashActivity.this, MainActivity.class));
-					finish();
+//					startActivity(new Intent(SplashActivity.this, MainActivity.class));
+//					finish();
 				}else {
 					try {
 						Thread.sleep(sleepTime);
 					} catch (InterruptedException e) {
 					}
-					startActivity(new Intent(SplashActivity.this, LoginActivity.class));
-					finish();
 				}
+				startActivity(new Intent(SplashActivity.this, FulicenterActivity.class));
+				finish();
 			}
 		}).start();
 

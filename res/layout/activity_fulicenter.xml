@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/list_background" >
+
+    <LinearLayout
+        android:id="@+id/main_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bottom_bar_normal_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RadioGroup
+            android:id="@+id/btn_container_conversation"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <RadioButton
+                android:button="@null"
+                android:checked="true"
+                android:id="@+id/btn_new_good"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="onCheckedChange"
+                android:drawableTop="@drawable/selector_menu_item_new_good"
+                android:text="新品"
+                android:textColor="@color/main_botton_text_color"
+                android:textSize="12sp" />
+            <RadioButton
+                android:button="@null"
+                android:checked="false"
+                android:id="@+id/btn_boutique"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="onCheckedChange"
+                android:drawableTop="@drawable/selector_menu_item_boutique"
+                android:scaleType="matrix"
+                android:text="精选"
+                android:textColor="@color/main_botton_text_color"
+                android:textSize="12sp" />
+            <RadioButton
+                android:button="@null"
+                android:checked="false"
+                android:id="@+id/btn_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="onCheckedChange"
+                android:drawableTop="@drawable/selector_menu_item_category"
+                android:scaleType="matrix"
+                android:text="分类"
+                android:textColor="@color/main_botton_text_color"
+                android:textSize="12sp" />
+            <RadioButton
+                android:button="@null"
+                android:checked="false"
+                android:id="@+id/btn_cart"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="onCheckedChange"
+                android:drawableTop="@drawable/selector_menu_item_cart"
+                android:text="购物车"
+                android:textColor="@color/main_botton_text_color"
+                android:textSize="12sp" />
+            <RadioButton
+                android:button="@null"
+                android:checked="false"
+                android:id="@+id/btn_personal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="onCheckedChange"
+                android:drawableTop="@drawable/selector_menu_item_personal_center"
+                android:text="我的"
+                android:textColor="@color/main_botton_text_color"
+                android:textSize="12sp" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/main_bottom" />
+
+</RelativeLayout>
