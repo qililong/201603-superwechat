@@ -41,7 +41,7 @@
     <android:uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".superWeChatApplication"
+        android:name=".FuliCenterApplication"
         android:allowBackup="true"
         android:icon="@drawable/logo_uidemo"
         android:label="福利社">
@@ -51,6 +51,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/horizontal_slide"
             android:windowSoftInputMode="adjustPan"></activity>
+        <activity android:name=".activity.FulicenterActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
 
         <!-- 开屏页 -->
         <activity
@@ -284,12 +290,7 @@
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="3ecea51f560650b1ed8a4b99808f52e8" />
 
-        <activity android:name=".activity.FulicenterActivity"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/horizontal_slide"
-            android:windowSoftInputMode="adjustPan">
-        </activity>
+
     </application>
 
 </manifest>

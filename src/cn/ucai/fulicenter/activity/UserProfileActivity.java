@@ -42,7 +42,7 @@ import cn.ucai.fulicenter.data.RequestManager;
 import cn.ucai.fulicenter.db.UserDao;
 import cn.ucai.fulicenter.domain.EMUser;
 import cn.ucai.fulicenter.listener.OnSetAvatarListener;
-import cn.ucai.fulicenter.superWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.utils.UserUtils;
 import cn.ucai.fulicenter.utils.Utils;
@@ -94,8 +94,8 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			headPhotoUpdate.setVisibility(View.GONE);
 			iconRightArrow.setVisibility(View.INVISIBLE);
 		}
-		if (username == null || username.equals(superWeChatApplication.getInstance().getUserName())) {
-			tvUsername.setText(superWeChatApplication.getInstance().getUserName());
+		if (username == null || username.equals(FuliCenterApplication.getInstance().getUserName())) {
+			tvUsername.setText(FuliCenterApplication.getInstance().getUserName());
 			UserUtils.setCurrentUserBeanNick(tvNickName);
 			UserUtils.setCurrentUserAvatar(headAvatar);
 		}
@@ -182,7 +182,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 	private void updateUserNike(final String nickName) {
 		try {
 			String path = new ApiParams()
-					.with(I.User.USER_NAME, superWeChatApplication.getInstance().getUserName())
+					.with(I.User.USER_NAME, FuliCenterApplication.getInstance().getUserName())
 					.with(I.User.NICK, nickName)
 					.getRequestUrl(I.REQUEST_UPDATE_USER_NICK);
 			executeRequest(new GsonRequest<User>(path, User.class, responseUpdateNick(nickName), errorListener()));
@@ -231,8 +231,8 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 							Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatenick_success), Toast.LENGTH_SHORT)
 									.show();
 							tvNickName.setText(nickName);
-							superWeChatApplication.currentUserNick = nickName;
-							User user = superWeChatApplication.getInstance().getUser();
+							FuliCenterApplication.currentUserNick = nickName;
+							User user = FuliCenterApplication.getInstance().getUser();
 							user.setMUserNick(nickName);
 							UserDao dao = new UserDao(mContext);
 							dao.updateUser(user);
@@ -271,7 +271,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 		String path = null;
 		try {
 			path = new ApiParams()
-					.with(I.User.USER_NAME, superWeChatApplication.getInstance().getUserName())
+					.with(I.User.USER_NAME, FuliCenterApplication.getInstance().getUserName())
 					.with(I.AVATAR_TYPE, I.AVATAR_TYPE_USER_PATH)
 					.getRequestUrl(I.REQUEST_UPLOAD_AVATAR);
 		} catch (Exception e) {
@@ -295,7 +295,7 @@ public class UserProfileActivity extends BaseActivity implements OnClickListener
 			public void onResponse(Message result) {
 				if (result.isResult()) {
 					RequestManager.getRequestQueue().getCache()
-							.remove(UserUtils.getAvatarPath(superWeChatApplication.getInstance()
+							.remove(UserUtils.getAvatarPath(FuliCenterApplication.getInstance()
 									.getUserName()));
 					UserUtils.setCurrentUserAvatar(headAvatar);
 					Toast.makeText(UserProfileActivity.this, getString(R.string.toast_updatephoto_success),

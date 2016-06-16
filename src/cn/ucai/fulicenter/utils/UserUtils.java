@@ -18,7 +18,7 @@ import cn.ucai.fulicenter.bean.Contact;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.data.RequestManager;
 import cn.ucai.fulicenter.domain.EMUser;
-import cn.ucai.fulicenter.superWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 
 
 public class UserUtils {
@@ -43,7 +43,7 @@ public class UserUtils {
     }
 
 	public static Contact getUserBeanInfo(String username) {
-		Contact contact = superWeChatApplication.getInstance().getUserList().get(username);
+		Contact contact = FuliCenterApplication.getInstance().getUserList().get(username);
 		return contact;
 	}
 
@@ -106,7 +106,7 @@ public class UserUtils {
 	}
 
 	public static void setCurrentUserAvatar(NetworkImageView imageView) {
-		User user = superWeChatApplication.getInstance().getUser();
+		User user = FuliCenterApplication.getInstance().getUser();
 		if (user != null) {
 			setUserAvatar(getAvatarPath(user.getMUserName()), imageView);
 		}
@@ -161,7 +161,7 @@ public class UserUtils {
     }
 
 	public static void setCurrentUserBeanNick(TextView textView) {
-		User user = superWeChatApplication.getInstance().getUser();
+		User user = FuliCenterApplication.getInstance().getUser();
 		if (textView != null && user != null) {
 			textView.setText(user.getMUserNick());
 		}

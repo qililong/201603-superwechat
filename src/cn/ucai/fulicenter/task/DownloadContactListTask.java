@@ -13,7 +13,7 @@ import cn.ucai.fulicenter.activity.BaseActivity;
 import cn.ucai.fulicenter.bean.Contact;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
-import cn.ucai.fulicenter.superWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.utils.Utils;
 
 /**
@@ -52,17 +52,17 @@ public class DownloadContactListTask extends BaseActivity {
             public void onResponse(Contact[] contacts) {
                 if (contacts != null) {
                     ArrayList<Contact> contactList =
-                            superWeChatApplication.getInstance().getContactList();
+                            FuliCenterApplication.getInstance().getContactList();
                     ArrayList<Contact> list = Utils.array2List(contacts);
                     contactList.clear();
                     contactList.addAll(list);
                     HashMap<String, Contact> userList =
-                            superWeChatApplication.getInstance().getUserList();
+                            FuliCenterApplication.getInstance().getUserList();
                     userList.clear();
                     for (Contact c : list) {
                         userList.put(c.getMContactCname(), c);
                     }
-                    superWeChatApplication.getInstance().setUserList(userList);
+                    FuliCenterApplication.getInstance().setUserList(userList);
                 }
                 mContext.sendStickyBroadcast(new Intent("update_contact_list"));
             }

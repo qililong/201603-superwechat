@@ -40,7 +40,7 @@ import cn.ucai.fulicenter.bean.Contact;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
-import cn.ucai.fulicenter.superWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.utils.UserUtils;
 
 public class AddContactActivity extends BaseActivity{
@@ -90,7 +90,7 @@ public class AddContactActivity extends BaseActivity{
 			startActivity(new Intent(this, AlertDialog.class).putExtra("msg", st));
 			return;
 		}
-		if(superWeChatApplication.getInstance().getUserName().equals(name.trim())){
+		if(FuliCenterApplication.getInstance().getUserName().equals(name.trim())){
 			String str = getString(cn.ucai.fulicenter.R.string.not_add_myself);
 			startActivity(new Intent(this, AlertDialog.class).putExtra("msg", str));
 			return;
@@ -118,7 +118,7 @@ public class AddContactActivity extends BaseActivity{
 			@Override
 			public void onResponse(User user) {
 				if (user != null) {
-					HashMap<String, Contact> userList = superWeChatApplication.getInstance().getUserList();
+					HashMap<String, Contact> userList = FuliCenterApplication.getInstance().getUserList();
 					if (userList.containsKey(user.getMUserName())) {
 						startActivity(new Intent(AddContactActivity.this,UserProfileActivity.class)
 								.putExtra("username",user.getMUserName()));
@@ -142,7 +142,7 @@ public class AddContactActivity extends BaseActivity{
 	 * @param view
 	 */
 	public void addContact(View view){
-		if(superWeChatApplication.getInstance().getUserName().equals(nameText.getText().toString())){
+		if(FuliCenterApplication.getInstance().getUserName().equals(nameText.getText().toString())){
 			String str = getString(cn.ucai.fulicenter.R.string.not_add_myself);
 			startActivity(new Intent(this, AlertDialog.class).putExtra("msg", str));
 			return;

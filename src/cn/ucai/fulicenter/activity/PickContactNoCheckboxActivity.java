@@ -30,7 +30,7 @@ import java.util.Map.Entry;
 import cn.ucai.fulicenter.Constant;
 import cn.ucai.fulicenter.adapter.ContactAdapter;
 import cn.ucai.fulicenter.bean.Contact;
-import cn.ucai.fulicenter.superWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.widget.Sidebar;
 
 public class PickContactNoCheckboxActivity extends BaseActivity {
@@ -77,7 +77,7 @@ public class PickContactNoCheckboxActivity extends BaseActivity {
 
 	private void getContactList() {
 		contactList.clear();
-		Map<String, Contact> users = superWeChatApplication.getInstance().getUserList();
+		Map<String, Contact> users = FuliCenterApplication.getInstance().getUserList();
 		Iterator<Entry<String, Contact>> iterator = users.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Entry<String, Contact> entry = iterator.next();

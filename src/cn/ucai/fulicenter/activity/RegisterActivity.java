@@ -36,7 +36,7 @@ import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.Message;
 import cn.ucai.fulicenter.data.OkHttpUtils;
 import cn.ucai.fulicenter.listener.OnSetAvatarListener;
-import cn.ucai.fulicenter.superWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.utils.Utils;
 
@@ -159,7 +159,7 @@ public class RegisterActivity extends BaseActivity {
 		File file = new File(ImageUtils.getAvatarPath(mContext,I.AVATAR_TYPE_USER_PATH),
 				avatarName + I.AVATAR_SUFFIX_JPG);
 		OkHttpUtils<Message> utils = new OkHttpUtils<Message>();
-		utils.url(superWeChatApplication.SERVER_ROOT)
+		utils.url(FuliCenterApplication.SERVER_ROOT)
 				.addParam(I.KEY_REQUEST,I.REQUEST_REGISTER)
 				.addParam(I.User.USER_NAME,username)
 				.addParam(I.User.PASSWORD,pwd)
@@ -199,7 +199,7 @@ public class RegisterActivity extends BaseActivity {
 							if (!RegisterActivity.this.isFinishing())
 								pd.dismiss();
 							// 保存用户名
-							superWeChatApplication.getInstance().setUserName(username);
+							FuliCenterApplication.getInstance().setUserName(username);
 							Toast.makeText(getApplicationContext(), getResources().getString(cn.ucai.fulicenter.R.string.Registered_successfully), Toast.LENGTH_SHORT).show();
 							finish();
 						}
@@ -233,7 +233,7 @@ public class RegisterActivity extends BaseActivity {
 		//取消远端服务器的注册
 		//url=http://10.0.2.2:8080/SuperWeChatServer/Server?request=unregister&m_user_name=
 		OkHttpUtils<Message> utils = new OkHttpUtils<Message>();
-		utils.url(superWeChatApplication.SERVER_ROOT)
+		utils.url(FuliCenterApplication.SERVER_ROOT)
 				.addParam(I.KEY_REQUEST,I.REQUEST_UNREGISTER)
 				.addParam(I.User.USER_NAME,username)
 				.targetClass(Message.class)

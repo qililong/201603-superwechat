@@ -43,7 +43,7 @@ import cn.ucai.fulicenter.activity.MainActivity;
 import cn.ucai.fulicenter.activity.OfflinePushNickActivity;
 import cn.ucai.fulicenter.activity.UserProfileActivity;
 import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
-import cn.ucai.fulicenter.superWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 
 /**
  * 设置界面
@@ -364,7 +364,7 @@ public class SettingsFragment extends Fragment implements OnClickListener {
 				getActivity().runOnUiThread(new Runnable() {
 					public void run() {
 						pd.dismiss();
-						superWeChatApplication instance = superWeChatApplication.getInstance();
+						FuliCenterApplication instance = FuliCenterApplication.getInstance();
 						instance.getContactList().clear();
 						instance.getUserList().clear();
 						// 重新显示登陆页面

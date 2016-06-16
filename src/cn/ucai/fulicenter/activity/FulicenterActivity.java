@@ -1,13 +1,16 @@
 package cn.ucai.fulicenter.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.fragment.NewGoodFrament;
 
-public class FulicenterActivity extends Activity {
+public class FulicenterActivity extends BaseActivity {
 
     RadioButton mNewGood;
     RadioButton mBoutique;
@@ -16,6 +19,8 @@ public class FulicenterActivity extends Activity {
     RadioButton mPersonal;
 
     RadioButton[] radios = new RadioButton[5];
+    NewGoodFrament mNewGoodFragment;
+    Fragment[] mFragment = new Fragment[1];
     private int index;
 
     private int currentTabIndex;
@@ -25,6 +30,19 @@ public class FulicenterActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fulicenter);
         initView();
+        initFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, mNewGoodFragment)
+//                .add(R.id.fragment_container, contactListFragment)
+//                .hide(contactListFragment)
+                .show(mNewGoodFragment)
+                .commit();
+        Log.e("main", "FulicenterActivity");
+    }
+
+    private void initFragment() {
+        mNewGoodFragment = new NewGoodFrament();
     }
 
     private void initView() {
@@ -59,7 +77,16 @@ public class FulicenterActivity extends Activity {
                 index = 4;
                 break;
         }
-        currentTabIndex = index;
+        if (currentTabIndex != index) {
+            FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
+            trx.hide(mFragment[currentTabIndex]);
+            if (!mFragment[index].isAdded()) {
+                trx.add(R.id.fragment_container, mFragment[index]);
+            }
+            trx.show(mFragment[index]).commit();
+            setVisibles(index);
+            currentTabIndex = index;
+        }
         setVisibles(index);
     }
 

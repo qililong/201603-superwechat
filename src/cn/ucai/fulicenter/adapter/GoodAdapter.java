@@ -77,6 +77,23 @@ public class GoodAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         }
     }
 
+    public void initItems(ArrayList<NewGoodBean> list) {
+        if (goodsList != null) {
+            goodsList.clear();
+        }
+        goodsList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void addItem(ArrayList<NewGoodBean> list) {
+        for (NewGoodBean ng : list) {
+            if (!goodsList.contains(ng)) {
+                goodsList.add(ng);
+            }
+        }
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof FooterViewHolder) {

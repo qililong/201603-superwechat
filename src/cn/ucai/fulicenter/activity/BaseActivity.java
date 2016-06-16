@@ -17,6 +17,7 @@ package cn.ucai.fulicenter.activity;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.android.volley.Request;
@@ -76,6 +77,7 @@ public class BaseActivity extends FragmentActivity {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                Log.e("main", "onErrorResponse");
                 System.out.print(volleyError.getMessage());
             }
         };

@@ -196,7 +196,7 @@ public class NewGoodBean implements Serializable{
 
     @Override
     public String toString() {
-        return "NewGoodBean{" +
+        return "NewBoutiqueGoods{" +
                 "id=" + id +
                 ", goodsId=" + goodsId +
                 ", catId=" + catId +

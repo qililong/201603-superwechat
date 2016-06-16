@@ -56,7 +56,7 @@ import cn.ucai.fulicenter.db.EMUserDao;
 import cn.ucai.fulicenter.db.UserDao;
 import cn.ucai.fulicenter.domain.EMUser;
 import cn.ucai.fulicenter.listener.OnSetAvatarListener;
-import cn.ucai.fulicenter.superWeChatApplication;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
 import cn.ucai.fulicenter.utils.CommonUtils;
 import cn.ucai.fulicenter.utils.MD5;
@@ -118,8 +118,8 @@ public class LoginActivity extends BaseActivity {
 
 			}
 		});
-		if (superWeChatApplication.getInstance().getUserName() != null) {
-			usernameEditText.setText(superWeChatApplication.getInstance().getUserName());
+		if (FuliCenterApplication.getInstance().getUserName() != null) {
+			usernameEditText.setText(FuliCenterApplication.getInstance().getUserName());
 		}
 	}
 
@@ -224,12 +224,12 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	private void saveUser(User user) {
-		superWeChatApplication instance = superWeChatApplication.getInstance();
+		FuliCenterApplication instance = FuliCenterApplication.getInstance();
 		instance.setUser(user);
 		// 登陆成功，保存用户名密码
 		instance.setUserName(currentUsername);
 		instance.setPassword(currentPassword);
-		superWeChatApplication.currentUserNick = user.getMUserNick();
+		FuliCenterApplication.currentUserNick = user.getMUserNick();
 	}
 
 	private void loginSuccess() {
@@ -240,7 +240,7 @@ public class LoginActivity extends BaseActivity {
 			EMChatManager.getInstance().loadAllConversations();
 			//下载用户头像到SD卡
 			final OkHttpUtils<Message> utils = new OkHttpUtils<Message>();
-			utils.url(superWeChatApplication.SERVER_ROOT)
+			utils.url(FuliCenterApplication.SERVER_ROOT)
 					.addParam(I.KEY_REQUEST,I.REQUEST_DOWNLOAD_AVATAR)
 					.addParam(I.AVATAR_TYPE,currentUsername)
 					.doInBackground(new Callback() {
@@ -281,7 +281,7 @@ public class LoginActivity extends BaseActivity {
 		}
 		// 更新当前用户的nickname 此方法的作用是在ios离线推送时能够显示用户nick
 		boolean updatenick = EMChatManager.getInstance().updateCurrentUserNick(
-				superWeChatApplication.currentUserNick.trim());
+				FuliCenterApplication.currentUserNick.trim());
 		if (!updatenick) {
 			Log.e("LoginActivity", "update current user nick fail");
 		}
