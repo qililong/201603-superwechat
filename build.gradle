@@ -16,9 +16,9 @@ dependencies {
     compile files('libsolley.jar')
     compile files('libshttp-urlconnection-2.7.5.jar')
     compile files('libs/jackson-core-asl-1.9.11.jar')
+    compile files('libs/disklrucache-2.0.2.jar')
     compile 'com.android.support:recyclerview-v7:24.0.0'
     compile 'com.android.support:support-v4:24.0.0'
-    compile files('libs/disklrucache-2.0.2.jar')
 }
 
 android {

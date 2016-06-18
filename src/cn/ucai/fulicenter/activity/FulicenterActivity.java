@@ -8,6 +8,7 @@ import android.widget.RadioButton;
 
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.fragment.BoutiqueFragment;
+import cn.ucai.fulicenter.fragment.CategoryFragment;
 import cn.ucai.fulicenter.fragment.NewGoodFragment;
 
 public class FulicenterActivity extends BaseActivity {
@@ -21,7 +22,8 @@ public class FulicenterActivity extends BaseActivity {
     RadioButton[] radios = new RadioButton[5];
     NewGoodFragment mNewGoodFragment;
     BoutiqueFragment mBoutiqueFragment;
-    Fragment[] mFragment = new Fragment[2];
+    CategoryFragment mCategoryFragment;
+    Fragment[] mFragment = new Fragment[3];
     private int index;
 
     private int currentTabIndex;
@@ -34,7 +36,8 @@ public class FulicenterActivity extends BaseActivity {
         initFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container1, mBoutiqueFragment)
+                .add(R.id.fragment_container1, mCategoryFragment).hide(mCategoryFragment)
+                .add(R.id.fragment_container1, mBoutiqueFragment).hide(mBoutiqueFragment)
                 .add(R.id.fragment_container1, mNewGoodFragment)
 //                .hide(contactListFragment)
                 .show(mNewGoodFragment)
@@ -44,8 +47,10 @@ public class FulicenterActivity extends BaseActivity {
     private void initFragment() {
         mNewGoodFragment = new NewGoodFragment();
         mBoutiqueFragment = new BoutiqueFragment();
+        mCategoryFragment = new CategoryFragment();
         mFragment[0] = mNewGoodFragment;
         mFragment[1] = mBoutiqueFragment;
+        mFragment[2] = mCategoryFragment;
     }
 
     private void initView() {
