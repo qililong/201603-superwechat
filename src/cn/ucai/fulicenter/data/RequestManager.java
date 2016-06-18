@@ -2,16 +2,22 @@ package cn.ucai.fulicenter.data;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+import cn.ucai.fulicenter.utils.MD5;
+
 public class RequestManager {
 	private static RequestQueue mRequestQueue;
 	private static ImageLoader mImageLoader;
 
+	private static DiskLruImageCache mDiskCache;
+
+//	private static ImageLoader.ImageCache mImagrCashe = new ImageCachUtil();
 	private RequestManager() {
 		// no instances
 	}
@@ -24,6 +30,7 @@ public class RequestManager {
 		// Use 1/8th of the available memory for this memory cache.
 		int cacheSize = 1024 * 1024 * memClass / 8;
 		mImageLoader = new ImageLoader(mRequestQueue, new BitmapLruCache(cacheSize));
+		mDiskCache = new DiskLruImageCache(context, "pic", cacheSize, Bitmap.CompressFormat.PNG, 100);
 	}
 
 	public static RequestQueue getRequestQueue() {
@@ -49,14 +56,26 @@ public class RequestManager {
 	 * Returns instance of ImageLoader initialized with {@see FakeImageCache}
 	 * which effectively means that no memory caching is used. This is useful
 	 * for images that you know that will be show only once.
-	 * 
+	 *
 	 * @return
 	 */
+	private static String createKey(String url) {
+		return MD5.getData(url);
+	}
+
 	public static ImageLoader getImageLoader() {
 		if (mImageLoader != null) {
 			return mImageLoader;
 		} else {
 			throw new IllegalStateException("ImageLoader not initialized");
 		}
+	}
+
+	public static Bitmap getBitmap(String url) {
+		return mDiskCache.getBitmap(createKey(url));
+	}
+
+	public static void putBitmap(String url, Bitmap bitmap) {
+		mDiskCache.putBitmap(createKey(url), bitmap);
 	}
 }

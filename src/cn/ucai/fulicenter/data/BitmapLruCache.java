@@ -17,11 +17,20 @@ public class BitmapLruCache extends LruCache<String, Bitmap> implements ImageLoa
 
 	@Override
 	public Bitmap getBitmap(String url) {
-		return get(url);
+		Bitmap bitmap = get(url);
+		if (bitmap == null) {
+			bitmap = RequestManager.getBitmap(url);
+			if (bitmap != null) {
+				putBitmap(url,bitmap);
+			}
+		}
+		return bitmap;
 	}
 
 	@Override
 	public void putBitmap(String url, Bitmap bitmap) {
 		put(url, bitmap);
+		RequestManager.putBitmap(url, bitmap);
 	}
+
 }
