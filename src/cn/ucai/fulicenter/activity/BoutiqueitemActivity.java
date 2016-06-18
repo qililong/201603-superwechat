@@ -1,5 +1,6 @@
-package cn.ucai.fulicenter.fragment;
+package cn.ucai.fulicenter.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,7 +8,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,23 +19,23 @@ import java.util.ArrayList;
 
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
-import cn.ucai.fulicenter.activity.FulicenterActivity;
-import cn.ucai.fulicenter.adapter.BoutiqueAdapter;
 import cn.ucai.fulicenter.adapter.GoodAdapter;
-import cn.ucai.fulicenter.bean.BoutiqueBean;
+import cn.ucai.fulicenter.bean.NewGoodBean;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
 import cn.ucai.fulicenter.utils.Utils;
 import cn.ucai.fulicenter.view.DisplayUtils;
 
 /**
- * Created by Administrator on 2016/6/18.
+ * Created by clawpo on 16/6/15.
  */
-public class BoutiqueFragment extends Fragment{
+public class BoutiqueitemActivity extends BaseActivity {
+    public static final String TAG = BoutiqueitemActivity.class.getName();
 
-    FulicenterActivity mContext;
-    ArrayList<BoutiqueBean> mGoodList;
-    BoutiqueAdapter mAdapter;
+    BoutiqueitemActivity mContext;
+    ArrayList<NewGoodBean> mGoodList;
+    GoodAdapter mAdapter;
+    private  int pageId = 0;
     private int action = I.ACTION_DOWNLOAD;
     String path;
 
@@ -43,19 +43,18 @@ public class BoutiqueFragment extends Fragment{
     SwipeRefreshLayout mSwipeRefreshLayout;
     RecyclerView mRecyclerView;
     TextView mtvHint;
-    LinearLayoutManager mGridLayoutManager;
+    GridLayoutManager mGridLayoutManager;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mContext = (FulicenterActivity) getActivity();
-        View layout = View.inflate(mContext, R.layout.fragment_boutique,null);
-        mGoodList = new ArrayList<BoutiqueBean>();
-        initView(layout);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.boutiqueitem_item);
+        mGoodList = new ArrayList<NewGoodBean>();
+        mContext = this;
+        initView();
         setListener();
         initData();
-        return layout;
     }
-
     private void setListener() {
         setPullDownRefreshListener();
         setPullUpRefreshListener();
@@ -76,9 +75,10 @@ public class BoutiqueFragment extends Fragment{
                             if(mAdapter.isMore()){
                                 mSwipeRefreshLayout.setRefreshing(true);
                                 action = I.ACTION_PULL_UP;
-                                getPath();
-                                mContext.executeRequest(new GsonRequest<BoutiqueBean[]>(path,
-                                        BoutiqueBean[].class,responseDownloadNewGoodListener(),
+                                pageId += I.PAGE_SIZE_DEFAULT;
+                                getPath(pageId);
+                                mContext.executeRequest(new GsonRequest<NewGoodBean[]>(path,
+                                        NewGoodBean[].class,responseDownloadNewGoodListener(),
                                         mContext.errorListener()));
                             }
                         }
@@ -106,10 +106,11 @@ public class BoutiqueFragment extends Fragment{
                     @Override
                     public void onRefresh() {
                         mtvHint.setVisibility(View.VISIBLE);
+                        pageId = 0;
                         action = I.ACTION_PULL_DOWN;
-                        getPath();
-                        mContext.executeRequest(new GsonRequest<BoutiqueBean[]>(path,
-                                BoutiqueBean[].class,responseDownloadNewGoodListener(),
+                        getPath(pageId);
+                        mContext.executeRequest(new GsonRequest<NewGoodBean[]>(path,
+                                NewGoodBean[].class,responseDownloadNewGoodListener(),
                                 mContext.errorListener()));
                     }
                 }
@@ -118,19 +119,22 @@ public class BoutiqueFragment extends Fragment{
 
     private void initData() {
         try {
-            getPath();
-            mContext.executeRequest(new GsonRequest<BoutiqueBean[]>(path,
-                    BoutiqueBean[].class,responseDownloadNewGoodListener(),
+            getPath(pageId);
+            mContext.executeRequest(new GsonRequest<NewGoodBean[]>(path,
+                    NewGoodBean[].class,responseDownloadNewGoodListener(),
                     mContext.errorListener()));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    private String getPath(){
+    private String getPath(int pageId){
         try {
+            int intExtra = getIntent().getIntExtra(I.Boutique.CAT_ID, 0);
             path = new ApiParams()
-                    .getRequestUrl(I.REQUEST_FIND_BOUTIQUES);
-            Log.e("main", path.toString());
+                    .with(I.NewAndBoutiqueGood.CAT_ID, intExtra + "")
+                    .with(I.PAGE_ID, pageId + "")
+                    .with(I.PAGE_SIZE, I.PAGE_SIZE_DEFAULT + "")
+                    .getRequestUrl(I.REQUEST_FIND_NEW_BOUTIQUE_GOODS);
             return path;
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,17 +142,17 @@ public class BoutiqueFragment extends Fragment{
         return null;
     }
 
-    private Response.Listener<BoutiqueBean[]> responseDownloadNewGoodListener() {
-        return new Response.Listener<BoutiqueBean[]>() {
+    private Response.Listener<NewGoodBean[]> responseDownloadNewGoodListener() {
+        return new Response.Listener<NewGoodBean[]>() {
             @Override
-            public void onResponse(BoutiqueBean[] newGoodBeen) {
+            public void onResponse(NewGoodBean[] newGoodBeen) {
                 if(newGoodBeen!=null) {
                     mAdapter.setMore(true);
                     mSwipeRefreshLayout.setRefreshing(false);
                     mtvHint.setVisibility(View.GONE);
                     mAdapter.setFooterText(getResources().getString(R.string.load_more));
                     //将数组转换为集合
-                    ArrayList<BoutiqueBean> list = Utils.array2List(newGoodBeen);
+                    ArrayList<NewGoodBean> list = Utils.array2List(newGoodBeen);
                     if (action == I.ACTION_DOWNLOAD || action == I.ACTION_PULL_DOWN) {
                         mAdapter.initItems(list);
                     } else if (action == I.ACTION_PULL_UP) {
@@ -163,21 +167,22 @@ public class BoutiqueFragment extends Fragment{
         };
     }
 
-    private void initView(View layout) {
-        mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.sfl_boutique);
+    private void initView() {
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.sfl_boutique_item);
         mSwipeRefreshLayout.setColorSchemeColors(
                 R.color.google_blue,
                 R.color.google_green,
                 R.color.google_red,
                 R.color.google_yellow
         );
-        mtvHint = (TextView) layout.findViewById(R.id.tv_refresh_hint);
-        mGridLayoutManager = new LinearLayoutManager(mContext);
+        mtvHint = (TextView) findViewById(R.id.tv_refresh_hint_item);
+        mGridLayoutManager = new GridLayoutManager(mContext, I.COLUM_NUM);
         mGridLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView = (RecyclerView) layout.findViewById(R.id.rv_boutique);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_boutique_item);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
-        mAdapter = new BoutiqueAdapter(mContext,mGoodList);
+        mAdapter = new GoodAdapter(mContext,mGoodList, I.SORT_BY_ADDTIME_DESC);
         mRecyclerView.setAdapter(mAdapter);
+        DisplayUtils.initBackWithTitle(mContext,getIntent().getStringExtra(I.Boutique.NAME));
     }
 }

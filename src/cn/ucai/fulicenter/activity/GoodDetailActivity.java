@@ -2,7 +2,6 @@ package cn.ucai.fulicenter.activity;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -46,9 +45,7 @@ public class GoodDetailActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("main", "AAAAAAAAAAAAAAAAAAAAAAAA");
         setContentView(R.layout.activity_good_details);
-        Log.e("main", "BBBBBBBBBBBBBBBBBBBBBBB");
         mContext = this;
         initView();
         initData();

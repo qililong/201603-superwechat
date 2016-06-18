@@ -14,10 +14,9 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.ArrayList;
 
-import cn.ucai.fulicenter.D;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
-import cn.ucai.fulicenter.activity.GoodDetailActivity;
+import cn.ucai.fulicenter.activity.BoutiqueitemActivity;
 import cn.ucai.fulicenter.bean.BoutiqueBean;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.view.FooterViewHolder;
@@ -88,8 +87,9 @@ public class BoutiqueAdapter extends RecyclerView.Adapter<ViewHolder> {
             boutiqueHolder.layoutGood.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mContext.startActivity(new Intent(mContext, GoodDetailActivity.class)
-                            .putExtra(D.Boutique.KEY_GOODS_ID,good.getId()));
+                    mContext.startActivity(new Intent(mContext, BoutiqueitemActivity.class)
+                            .putExtra(I.Boutique.NAME,good.getName())
+                            .putExtra(I.Boutique.CAT_ID, good.getId()));
                 }
             });
         }

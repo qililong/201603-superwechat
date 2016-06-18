@@ -291,6 +291,7 @@
             android:value="3ecea51f560650b1ed8a4b99808f52e8" />
 
         <activity android:name=".activity.GoodDetailActivity"></activity>
+        <activity android:name=".activity.BoutiqueitemActivity"></activity>
     </application>
 
 </manifest>
