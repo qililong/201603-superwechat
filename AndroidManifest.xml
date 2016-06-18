@@ -292,6 +292,7 @@
 
         <activity android:name=".activity.GoodDetailActivity"></activity>
         <activity android:name=".activity.BoutiqueitemActivity"></activity>
+        <activity android:name=".activity.CategoryChildActivity"></activity>
     </application>
 
 </manifest>
