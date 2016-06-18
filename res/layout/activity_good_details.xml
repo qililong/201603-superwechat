@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cn.ucai.fulicenter.activity.good_detailsActivity"
     android:background="@color/good_detail_bg">
 
     <RelativeLayout
@@ -12,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="35dp"
         android:background="@color/good_detail_title_bg">
-         />
+
+        <include layout="@layout/common_head_title" />
         <ImageView
             android:id="@+id/ivShare"
             android:layout_width="wrap_content"
@@ -97,14 +97,14 @@
             android:layout_below="@id/tvCurrencyPrice"
             android:layout_marginTop="25dp">
 
-            <cn.ucai.fulicenter.SlideAutoLoopView
+            <cn.ucai.fulicenter.view.SlideAutoLoopView
                 android:id="@+id/salv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/good_detail_bg_white">
-            </cn.ucai.fulicenter.SlideAutoLoopView>
+            </cn.ucai.fulicenter.view.SlideAutoLoopView>
 
-            <cn.ucai.fulicenter.FlowIndicator
+            <cn.ucai.fulicenter.view.FlowIndicator
                 android:id="@+id/indicator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

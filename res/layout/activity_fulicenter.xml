@@ -22,6 +22,7 @@
             <RadioButton
                 android:button="@null"
                 android:checked="true"
+                android:paddingTop="7dp"
                 android:id="@+id/btn_new_good"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -36,6 +37,7 @@
                 android:button="@null"
                 android:checked="false"
                 android:id="@+id/btn_boutique"
+                android:paddingTop="7dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -49,6 +51,7 @@
             <RadioButton
                 android:button="@null"
                 android:checked="false"
+                android:paddingTop="7dp"
                 android:id="@+id/btn_category"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -60,23 +63,53 @@
                 android:text="分类"
                 android:textColor="@color/main_botton_text_color"
                 android:textSize="12sp" />
-            <RadioButton
-                android:button="@null"
-                android:checked="false"
-                android:id="@+id/btn_cart"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:onClick="onCheckedChange"
-                android:drawableTop="@drawable/selector_menu_item_cart"
-                android:text="购物车"
-                android:textColor="@color/main_botton_text_color"
-                android:textSize="12sp" />
+            <RelativeLayout
+                style="@style/menu_item_style_cart">
+                <RadioButton
+                    android:button="@null"
+                    android:checked="false"
+                    android:id="@+id/btn_cart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:onClick="onCheckedChange"
+                    android:drawableTop="@drawable/selector_menu_item_cart"
+                    android:text="购物车"
+                    android:textColor="@color/main_botton_text_color"
+                    android:textSize="12sp"/>
+                <LinearLayout
+                    android:id="@+id/shopping_cart_num_bg"
+                    android:layout_width="55dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity = "center_horizontal"
+                    android:gravity="center"
+                    android:layout_marginLeft="15dp"
+                    android:layout_centerInParent="true"
+                    android:layout_alignParentTop="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvCartHint"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/cart_hint"
+                        android:layout_marginLeft="15dp"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:paddingLeft="50dp"
+                        android:text="1300"
+                        android:textColor="#fff"
+                        android:textSize="12dp"
+                        android:visibility="gone"/>
+                </LinearLayout>
+            </RelativeLayout>
+
             <RadioButton
                 android:button="@null"
                 android:checked="false"
                 android:id="@+id/btn_personal"
+                android:paddingTop="7dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -90,7 +123,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/fragment_container1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/main_bottom" />

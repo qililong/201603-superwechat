@@ -14,6 +14,6 @@ public class FooterViewHolder extends RecyclerView.ViewHolder{
 
     public FooterViewHolder(View view) {
         super(view);
-        tvFooter = (TextView) view.findViewById(R.id.tv_footer);
+        tvFooter = (TextView) view.findViewById(R.id.tv_good_footer);
     }
 }

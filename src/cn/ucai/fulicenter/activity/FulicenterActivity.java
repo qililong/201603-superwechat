@@ -3,12 +3,11 @@ package cn.ucai.fulicenter.activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 
 import cn.ucai.fulicenter.R;
-import cn.ucai.fulicenter.fragment.NewGoodFrament;
+import cn.ucai.fulicenter.fragment.NewGoodFragment;
 
 public class FulicenterActivity extends BaseActivity {
 
@@ -19,7 +18,7 @@ public class FulicenterActivity extends BaseActivity {
     RadioButton mPersonal;
 
     RadioButton[] radios = new RadioButton[5];
-    NewGoodFrament mNewGoodFragment;
+    NewGoodFragment mNewGoodFragment;
     Fragment[] mFragment = new Fragment[1];
     private int index;
 
@@ -33,16 +32,15 @@ public class FulicenterActivity extends BaseActivity {
         initFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_container, mNewGoodFragment)
+                .add(R.id.fragment_container1, mNewGoodFragment)
 //                .add(R.id.fragment_container, contactListFragment)
 //                .hide(contactListFragment)
                 .show(mNewGoodFragment)
                 .commit();
-        Log.e("main", "FulicenterActivity");
     }
 
     private void initFragment() {
-        mNewGoodFragment = new NewGoodFrament();
+        mNewGoodFragment = new NewGoodFragment();
     }
 
     private void initView() {
@@ -87,7 +85,6 @@ public class FulicenterActivity extends BaseActivity {
             setVisibles(index);
             currentTabIndex = index;
         }
-        setVisibles(index);
     }
 
     public void setVisibles(int index) {

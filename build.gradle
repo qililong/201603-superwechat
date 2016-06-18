@@ -16,14 +16,13 @@ dependencies {
     compile files('libsolley.jar')
     compile files('libshttp-urlconnection-2.7.5.jar')
     compile files('libs/jackson-core-asl-1.9.11.jar')
-    compile 'com.android.support:recyclerview-v7:23.2.0'
-    compile 'com.android.support:support-v4:23.2.0'
-    compile 'com.android.support:support-v4:23.2.0'
+    compile 'com.android.support:recyclerview-v7:24.0.0'
+    compile 'com.android.support:support-v4:24.0.0'
 }
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "24.0.0"
 
     defaultConfig {
         applicationId "cn.ucai.fulicenter"
