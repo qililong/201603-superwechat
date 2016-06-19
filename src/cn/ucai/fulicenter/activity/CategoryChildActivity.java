@@ -18,12 +18,14 @@ import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.adapter.GoodAdapter;
 import cn.ucai.fulicenter.bean.CategoryChildBean;
+import cn.ucai.fulicenter.bean.ColorBean;
 import cn.ucai.fulicenter.bean.NewGoodBean;
 import cn.ucai.fulicenter.data.ApiParams;
 import cn.ucai.fulicenter.data.GsonRequest;
 import cn.ucai.fulicenter.utils.ImageUtils;
 import cn.ucai.fulicenter.utils.Utils;
 import cn.ucai.fulicenter.view.CatChildFilterButton;
+import cn.ucai.fulicenter.view.ColorFilterButton;
 import cn.ucai.fulicenter.view.DisplayUtils;
 
 /**
@@ -38,6 +40,7 @@ public class CategoryChildActivity extends BaseActivity {
     private  int pageId = 0;
     private int action = I.ACTION_DOWNLOAD;
     String path;
+    int catId;
 
     /** 下拉刷新控件*/
     SwipeRefreshLayout mSwipeRefreshLayout;
@@ -53,6 +56,7 @@ public class CategoryChildActivity extends BaseActivity {
 
     SortStateChangedListener mSortStateChangedListener;
     CatChildFilterButton mCatChildFilterButton;
+    ColorFilterButton mColorFilterButton;
     String groupName;
     ArrayList<CategoryChildBean> mChildList;
 
@@ -86,18 +90,19 @@ public class CategoryChildActivity extends BaseActivity {
         mRecyclerView.setOnScrollListener(
                 new RecyclerView.OnScrollListener() {
                     int lastItemPosition;
+
                     @Override
                     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                         super.onScrollStateChanged(recyclerView, newState);
-                        if(newState == RecyclerView.SCROLL_STATE_IDLE &&
-                                lastItemPosition == mAdapter.getItemCount()-1){
-                            if(mAdapter.isMore()){
+                        if (newState == RecyclerView.SCROLL_STATE_IDLE &&
+                                lastItemPosition == mAdapter.getItemCount() - 1) {
+                            if (mAdapter.isMore()) {
                                 mSwipeRefreshLayout.setRefreshing(true);
                                 action = I.ACTION_PULL_UP;
                                 pageId += I.PAGE_SIZE_DEFAULT;
                                 getPath(pageId);
                                 mContext.executeRequest(new GsonRequest<NewGoodBean[]>(path,
-                                        NewGoodBean[].class,responseDownloadNewGoodListener(),
+                                        NewGoodBean[].class, responseDownloadNewGoodListener(),
                                         mContext.errorListener()));
                             }
                         }
@@ -121,7 +126,7 @@ public class CategoryChildActivity extends BaseActivity {
      */
     private void setPullDownRefreshListener() {
         mSwipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener(){
+                new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         mtvHint.setVisibility(View.VISIBLE);
@@ -129,7 +134,7 @@ public class CategoryChildActivity extends BaseActivity {
                         action = I.ACTION_PULL_DOWN;
                         getPath(pageId);
                         mContext.executeRequest(new GsonRequest<NewGoodBean[]>(path,
-                                NewGoodBean[].class,responseDownloadNewGoodListener(),
+                                NewGoodBean[].class, responseDownloadNewGoodListener(),
                                 mContext.errorListener()));
                     }
                 }
@@ -144,15 +149,35 @@ public class CategoryChildActivity extends BaseActivity {
             mContext.executeRequest(new GsonRequest<NewGoodBean[]>(path,
                     NewGoodBean[].class, responseDownloadNewGoodListener(),
                     mContext.errorListener()));
+            String colorPath = new ApiParams()
+                    .with(I.CategoryGood.CAT_ID, catId + "")
+                    .getRequestUrl(I.REQUEST_FIND_COLOR_LIST);
+            mContext.executeRequest(new GsonRequest<ColorBean[]>(colorPath, ColorBean[].class,
+                    responseDownloadColorListener(), errorListener()));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private Response.Listener<ColorBean[]> responseDownloadColorListener() {
+        return new Response.Listener<ColorBean[]>() {
+            @Override
+            public void onResponse(ColorBean[] colorBeans) {
+                if (colorBeans != null) {
+                    mColorFilterButton.setVisibility(View.VISIBLE);
+                    ArrayList<ColorBean> list = Utils.array2List(colorBeans);
+                    mColorFilterButton.setOnColorFilterClickListener(groupName, mChildList, list);
+                }
+            }
+        };
+    }
+
+
     private String getPath(int pageId){
         try {
-            int intExtra = getIntent().getIntExtra(I.CategoryChild.CAT_ID, 0);
+            catId = getIntent().getIntExtra(I.CategoryChild.CAT_ID, 0);
             path = new ApiParams()
-                    .with(I.NewAndBoutiqueGood.CAT_ID, intExtra + "")
+                    .with(I.NewAndBoutiqueGood.CAT_ID, catId + "")
                     .with(I.PAGE_ID, pageId + "")
                     .with(I.PAGE_SIZE, I.PAGE_SIZE_DEFAULT + "")
                     .getRequestUrl(I.REQUEST_FIND_NEW_BOUTIQUE_GOODS);
@@ -207,6 +232,8 @@ public class CategoryChildActivity extends BaseActivity {
         mbtnPriceSort = (Button) findViewById(R.id.btn_price_sort);
         mbtnAddTimeSort = (Button) findViewById(R.id.btn_add_time_sort);
         mCatChildFilterButton = (CatChildFilterButton) findViewById(R.id.btnCatChildFilter);
+        mColorFilterButton = (ColorFilterButton) findViewById(R.id.btnColorFilter);
+        mColorFilterButton.setVisibility(View.INVISIBLE);
         DisplayUtils.initBack(mContext);
     }
 
