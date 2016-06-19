@@ -466,4 +466,7 @@ public interface I {
     String REQUEST_PAY="pay";
     /**壹收款服务端支付URL*/
     String PAY_URL= FuliCenterApplication.SERVER_ROOT+"?request="+I.REQUEST_PAY;
+
+//    String DOWNLOAD_DOWNLOAD_CATEGORY_CHILD_IMAGE_URL = FuliCenterApplication.SERVER_ROOT+
+//            "?request="+REQUEST_DOWNLOAD_CATEGORY_CHILD_IMAGE+"&"+Boutique.IMAGE_URL+"=";
 }

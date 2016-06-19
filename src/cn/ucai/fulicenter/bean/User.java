@@ -2,9 +2,9 @@ package cn.ucai.fulicenter.bean;
 
 
 /**
- * EMUser entity. @author MyEclipse Persistence Tools
+ * User entity. @author MyEclipse Persistence Tools
  */
-public class User extends Location implements java.io.Serializable {
+public class User extends Message implements java.io.Serializable {
 	private static final long serialVersionUID = 6848921231724157394L;
 
 	// Fields
@@ -16,7 +16,7 @@ public class User extends Location implements java.io.Serializable {
 	private String muserName;
 	private String muserPassword;
 	private String muserNick;
-	private Integer muserUnreadMsgCount = 0;
+	private Integer muserUnreadMsgCount=0;
 	private String header;
 
 	// Constructors
@@ -46,16 +46,6 @@ public class User extends Location implements java.io.Serializable {
 	}
 
 	// Property accessors
-
-
-	public String getHeader() {
-		return header;
-	}
-
-	public void setHeader(String header) {
-		this.header = header;
-	}
-
 	public Integer getMUserId() {
 		return this.muserId;
 	}
@@ -96,16 +86,20 @@ public class User extends Location implements java.io.Serializable {
 		this.muserUnreadMsgCount = MUserUnreadMsgCount;
 	}
 
+	public String getHeader() {
+		return header;
+	}
+
+	public void setHeader(String header) {
+		this.header = header;
+	}
+
 	@Override
 	public String toString() {
-		return "EMUser{" +
-				"muserId=" + muserId +
-				", muserName='" + muserName + '\'' +
-				", muserPassword='" + muserPassword + '\'' +
-				", muserNick='" + muserNick + '\'' +
-				", muserUnreadMsgCount=" + muserUnreadMsgCount +
-				", header='" + header + '\'' +
-				'}';
+		return "User [MUserId=" + muserId + ", MUserName=" + muserName
+				+ ", MUserPassword=" + muserPassword + ", MUserNick="
+				+ muserNick + ", MUserUnreadMsgCount=" + muserUnreadMsgCount
+				+ ", header=" + header + "]";
 	}
 
 	@Override
@@ -115,12 +109,12 @@ public class User extends Location implements java.io.Serializable {
 
 		User user = (User) o;
 
-		return muserName.equals(user.muserName);
+		return getMUserName().equals(user.getMUserName());
 
 	}
 
 	@Override
 	public int hashCode() {
-		return muserName.hashCode();
+		return getMUserName().hashCode();
 	}
 }

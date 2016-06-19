@@ -3,9 +3,9 @@ package cn.ucai.fulicenter.bean;
 import java.io.Serializable;
 
 /**
- * Created by Administrator on 2016/6/13.
+ * Created by ucai001 on 2016/3/1.
  */
-public class BoutiqueBean implements Serializable{
+public class BoutiqueBean implements Serializable {
 
     /**
      * id : 262
@@ -21,44 +21,44 @@ public class BoutiqueBean implements Serializable{
     private String name;
     private String imageurl;
 
-    public int getId() {
-        return id;
-    }
-
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public String getImageurl() {
-        return imageurl;
-    }
-
     public void setImageurl(String imageurl) {
         this.imageurl = imageurl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getImageurl() {
+        return imageurl;
     }
 
     @Override
