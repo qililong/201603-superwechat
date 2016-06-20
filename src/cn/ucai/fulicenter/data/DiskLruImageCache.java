@@ -93,18 +93,10 @@ public class DiskLruImageCache implements ImageCache  {
             if( writeBitmapToFile( data, editor ) ) {               
                 mDiskCache.flush();
                 editor.commit();
-
-                Log.d( "cache_test_DISK_", "image put on disk cache " + key );
-
             } else {
                 editor.abort();
-
-                Log.d( "cache_test_DISK_", "ERROR on: image put on disk cache " + key );
-
             }   
         } catch (IOException e) {
-
-            Log.d( "cache_test_DISK_", "ERROR on: image put on disk cache " + key );
 
             try {
                 if ( editor != null ) {
@@ -140,11 +132,6 @@ public class DiskLruImageCache implements ImageCache  {
                 snapshot.close();
             }
         }
-
-
-        Log.d( "cache_test_DISK_", bitmap == null ? "" : "image read from disk " + key);
-
-
         return bitmap;
 
     }

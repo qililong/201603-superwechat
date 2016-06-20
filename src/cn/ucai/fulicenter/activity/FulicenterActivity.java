@@ -10,6 +10,7 @@ import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.fragment.BoutiqueFragment;
 import cn.ucai.fulicenter.fragment.CategoryFragment;
 import cn.ucai.fulicenter.fragment.NewGoodFragment;
+import cn.ucai.fulicenter.fragment.Personal_CenterFragment;
 
 public class FulicenterActivity extends BaseActivity {
 
@@ -23,7 +24,8 @@ public class FulicenterActivity extends BaseActivity {
     NewGoodFragment mNewGoodFragment;
     BoutiqueFragment mBoutiqueFragment;
     CategoryFragment mCategoryFragment;
-    Fragment[] mFragment = new Fragment[3];
+    Personal_CenterFragment mPersonal_CenterFragment;
+    Fragment[] mFragment = new Fragment[5];
     private int index;
 
     private int currentTabIndex;
@@ -48,9 +50,11 @@ public class FulicenterActivity extends BaseActivity {
         mNewGoodFragment = new NewGoodFragment();
         mBoutiqueFragment = new BoutiqueFragment();
         mCategoryFragment = new CategoryFragment();
+        mPersonal_CenterFragment = new Personal_CenterFragment();
         mFragment[0] = mNewGoodFragment;
         mFragment[1] = mBoutiqueFragment;
         mFragment[2] = mCategoryFragment;
+        mFragment[4] = mPersonal_CenterFragment;
     }
 
     private void initView() {
@@ -82,6 +86,7 @@ public class FulicenterActivity extends BaseActivity {
                 index = 3;
                 break;
             case R.id.btn_personal:
+
                 index = 4;
                 break;
         }
@@ -89,7 +94,7 @@ public class FulicenterActivity extends BaseActivity {
             FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
             trx.hide(mFragment[currentTabIndex]);
             if (!mFragment[index].isAdded()) {
-                trx.add(R.id.fragment_container, mFragment[index]);
+                trx.add(R.id.fragment_container1, mFragment[index]);
             }
             trx.show(mFragment[index]).commit();
             setVisibles(index);

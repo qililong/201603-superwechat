@@ -97,7 +97,8 @@ public class CategoryAdapter extends BaseExpandableListAdapter{
     }
 
     @Override
-    public View getChildView(final int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+    public View getChildView(final int groupPosition, int childPosition, boolean isLastChild,
+                             View convertView, ViewGroup parent) {
         ViewChildHolder holder = null;
         if (convertView == null) {
             convertView = View.inflate(mContext, R.layout.item_cateogry_child, null);

@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:background="@color/personal_center_top_bg">
 
         <RelativeLayout
@@ -44,7 +44,7 @@
             android:id="@+id/center_user_info"
             android:layout_below="@id/center_top"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
             

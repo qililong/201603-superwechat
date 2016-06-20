@@ -256,7 +256,8 @@ public class CategoryChildActivity extends BaseActivity {
                         resId = R.drawable.arrow_order_down;
                     }
                     mSortByPriceAsc = !mSortByPriceAsc;
-                    right.setBounds(0, 0, ImageUtils.getDrawableWidth(mContext, resId), ImageUtils.getDrawableHeight(mContext, resId));
+                    right.setBounds(0, 0, ImageUtils.getDrawableWidth(mContext, resId),
+                            ImageUtils.getDrawableHeight(mContext, resId));
                     mbtnPriceSort.setCompoundDrawables(null, null, right, null);
                     break;
                 case R.id.btn_add_time_sort:
@@ -270,7 +271,8 @@ public class CategoryChildActivity extends BaseActivity {
                         resId = R.drawable.arrow_order_down;
                     }
                     mSortByAddTimeAsc = !mSortByAddTimeAsc;
-                    right.setBounds(0, 0, ImageUtils.getDrawableWidth(mContext, resId), ImageUtils.getDrawableHeight(mContext, resId));
+                    right.setBounds(0, 0, ImageUtils.getDrawableWidth(mContext, resId),
+                            ImageUtils.getDrawableHeight(mContext, resId));
                     mbtnPriceSort.setCompoundDrawables(null, null, right, null);
                     break;
             }
