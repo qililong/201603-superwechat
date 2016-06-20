@@ -48,6 +48,8 @@ public class DownloadCollectCountTask extends BaseActivity{
             public void onResponse(MessageBean messageBean) {
                 if (messageBean.isSuccess()) {
                     FuliCenterApplication.getInstance().setmCollectCount(Integer.parseInt(messageBean.getMsg()));
+                } else {
+                    FuliCenterApplication.getInstance().setmCollectCount(0);
                 }
                 mContext.sendStickyBroadcast(new Intent("update_collect_count"));
             }

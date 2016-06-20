@@ -51,6 +51,8 @@ public class Personal_CenterFragment extends Fragment {
         View layout = View.inflate(mContext, R.layout.fragment_personal__center, null);
         initView(layout);
         initData();
+        registerUpdateUserChangedReceiver();
+        registerUpdateCollectCountReceiver();
         return layout;
     }
 
@@ -85,16 +87,16 @@ public class Personal_CenterFragment extends Fragment {
         imagelist.add(map1);
         HashMap<String, Integer> map2 = new HashMap<String, Integer>();
         map2.put("image", R.drawable.order_list2);
-        imagelist.add(map1);
+        imagelist.add(map2);
         HashMap<String, Integer> map3 = new HashMap<String, Integer>();
         map3.put("image", R.drawable.order_list3);
-        imagelist.add(map1);
+        imagelist.add(map3);
         HashMap<String, Integer> map4 = new HashMap<String, Integer>();
         map4.put("image", R.drawable.order_list4);
-        imagelist.add(map1);
+        imagelist.add(map4);
         HashMap<String, Integer> map5 = new HashMap<String, Integer>();
         map5.put("image", R.drawable.order_list5);
-        imagelist.add(map1);
+        imagelist.add(map5);
 
         SimpleAdapter simpleAdapter = new SimpleAdapter(mContext, imagelist, R.layout.simple_grid_item, new String[]{"image"},
                 new int[]{R.id.image});

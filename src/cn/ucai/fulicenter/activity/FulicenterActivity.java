@@ -1,11 +1,14 @@
 package cn.ucai.fulicenter.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.RadioButton;
 
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.fragment.BoutiqueFragment;
 import cn.ucai.fulicenter.fragment.CategoryFragment;
@@ -29,11 +32,13 @@ public class FulicenterActivity extends BaseActivity {
     private int index;
 
     private int currentTabIndex;
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fulicenter);
+        mContext = this;
         initView();
         initFragment();
         getSupportFragmentManager()
@@ -86,7 +91,9 @@ public class FulicenterActivity extends BaseActivity {
                 index = 3;
                 break;
             case R.id.btn_personal:
-
+                if (FuliCenterApplication.getInstance().getUser() == null) {
+                    mContext.startActivity(new Intent(FulicenterActivity.this,LoginActivity.class));
+                }
                 index = 4;
                 break;
         }

@@ -93,7 +93,7 @@ public class LoginActivity extends BaseActivity {
 		// 如果用户名密码都有，直接进入主页面
 		if (DemoHXSDKHelper.getInstance().isLogined()) {
 			autoLogin = true;
-			startActivity(new Intent(LoginActivity.this, MainActivity.class));
+			startActivity(new Intent(LoginActivity.this, FulicenterActivity.class));
 			return;
 		}
 		setContentView(cn.ucai.fulicenter.R.layout.activity_login);
@@ -290,7 +290,7 @@ public class LoginActivity extends BaseActivity {
 		}
 		// 进入主页面
 		Intent intent = new Intent(LoginActivity.this,
-				MainActivity.class);
+				FulicenterActivity.class);
 		startActivity(intent);
 
 		finish();
