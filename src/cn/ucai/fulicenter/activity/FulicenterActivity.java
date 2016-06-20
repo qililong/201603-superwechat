@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
 
@@ -92,9 +93,11 @@ public class FulicenterActivity extends BaseActivity {
                 break;
             case R.id.btn_personal:
                 if (FuliCenterApplication.getInstance().getUser() == null) {
-                    mContext.startActivity(new Intent(FulicenterActivity.this,LoginActivity.class));
+                    mContext.startActivity(new Intent(FulicenterActivity.this, LoginActivity.class)
+                    .putExtra("action","personal"));
+                } else {
+                    index = 4;
                 }
-                index = 4;
                 break;
         }
         if (currentTabIndex != index) {
@@ -117,5 +120,37 @@ public class FulicenterActivity extends BaseActivity {
                 radios[i].setSelected(false);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getIntent().getStringExtra("action") != null) {
+
+            Log.e("main", "action:" + getIntent().getStringExtra("action").toString());
+        }
+        if (FuliCenterApplication.getInstance().getUser() != null && getIntent().getStringExtra("action") != null) {
+            if (getIntent().getStringExtra("action").equals("personal")) {
+                index = 4;
+            }
+        } else {
+            radios[index].setChecked(true);
+        }
+        if (currentTabIndex != index) {
+            FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
+            trx.hide(mFragment[currentTabIndex]);
+            if (!mFragment[index].isAdded()) {
+                trx.add(R.id.fragment_container1, mFragment[index]);
+            }
+            trx.show(mFragment[index]).commit();
+            setVisibles(index);
+            currentTabIndex = index;
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 }

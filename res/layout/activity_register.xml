@@ -12,6 +12,7 @@
         android:background="@drawable/button_register_bg">
 
         <ImageView
+            android:onClick="back"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:src="@drawable/back"

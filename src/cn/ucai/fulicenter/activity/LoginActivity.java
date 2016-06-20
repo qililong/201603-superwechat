@@ -129,7 +129,7 @@ public class LoginActivity extends BaseActivity {
 	 * @param
 	 */
 	private void setLoginListener() {
-		findViewById(R.id.btnlogin1).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.btn_login1).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (!CommonUtils.isNetWorkConnected(mContext)) {
@@ -190,6 +190,8 @@ public class LoginActivity extends BaseActivity {
 		User user = dao.findUserByUserName(currentUsername);
 		if (user != null) {
 			if (user.getMUserPassword().equals(MD5.getData(currentPassword))) {
+				saveUser(user);
+				Log.e("main", "User:" + user.toString());
 				loginSuccess();
 			} else {
 				pd.dismiss();
@@ -289,8 +291,10 @@ public class LoginActivity extends BaseActivity {
 			pd.dismiss();
 		}
 		// 进入主页面
+		String action = getIntent().getStringExtra("action");
 		Intent intent = new Intent(LoginActivity.this,
-				FulicenterActivity.class);
+				FulicenterActivity.class)
+				.putExtra("action",action);
 		startActivity(intent);
 
 		finish();
@@ -351,7 +355,7 @@ public class LoginActivity extends BaseActivity {
 	 * @param
 	 */
 	private void setRegisterListener() {
-		findViewById(R.id.btnregister1).setOnClickListener(new View.OnClickListener() {
+		findViewById(R.id.btn_register1).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				startActivityForResult(new Intent(mContext, RegisterActivity.class), 0);
@@ -365,5 +369,9 @@ public class LoginActivity extends BaseActivity {
 		if (autoLogin) {
 			return;
 		}
+	}
+
+	public void back(View view) {
+		finish();
 	}
 }

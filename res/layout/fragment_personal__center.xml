@@ -61,7 +61,7 @@
                 android:layout_marginLeft="10dp"
                 android:textSize="18sp"
                 android:layout_toRightOf="@id/iv_user_avatar"
-                android:text="恋上猫女衣坊"
+                android:text="用户名"
                 android:textColor="@color/white"/>
             <ImageView
                 android:id="@+id/iv_user_qrcode"

@@ -14,9 +14,9 @@ import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMGroupManager;
 
 import cn.ucai.fulicenter.DemoHXSDKHelper;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.db.UserDao;
-import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
 
 
