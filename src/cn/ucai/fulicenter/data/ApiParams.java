@@ -67,11 +67,6 @@ public class ApiParams extends HashMap<String, String> {
 			url.deleteCharAt(url.length() - 1);
 			return url.toString();
 		}
-		url.append("?")
-				.append(I.KEY_REQUEST)
-				.append("=")
-				.append(request)
-				.append("&");
 		Set<String> set = this.keySet();
 		for(String key:set){
 			url.append(key)

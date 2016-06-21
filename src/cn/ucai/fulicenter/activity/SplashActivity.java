@@ -17,6 +17,8 @@ import cn.ucai.fulicenter.DemoHXSDKHelper;
 import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.bean.User;
 import cn.ucai.fulicenter.db.UserDao;
+import cn.ucai.fulicenter.task.DownloadCartListCountTask;
+import cn.ucai.fulicenter.task.DownloadCollectCountTask;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
 
 
@@ -57,6 +59,8 @@ public class SplashActivity extends BaseActivity {
 			User user = dao.findUserByUserName(username);
 			FuliCenterApplication.getInstance().setUser(user);
 			new DownloadContactListTask(mContext, username).execute();
+			new DownloadCollectCountTask(mContext).execute();
+			new DownloadCartListCountTask(mContext).execute();
 		}
 
 		new Thread(new Runnable() {

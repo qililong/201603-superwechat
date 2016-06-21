@@ -189,12 +189,23 @@ public interface I {
 
 	public static interface User {
 		String TABLE_NAME							=		"t_superwechat_user";
-		String USER_ID 								= 		"m_user_id";					//主键
+		String USER_ID 							    = 		"m_user_id";					//主键
 		String USER_NAME 							= 		"m_user_name";					//用户账号
 		String PASSWORD 							= 		"m_user_password";				//用户密码
 		String NICK 								= 		"m_user_nick";					//用户昵称
 		String UN_READ_MSG_COUNT 					= 		"m_user_unread_msg_count";		//未读消息数量
 	}
+
+
+    public static interface Users {
+        String TABLE_NAME							=		"tb_user";
+        String ID 								    = 		"id";					//主键
+        String NAME 							    = 		"userName";					//用户账号
+        String PASSWORD 							= 		"password";				//用户密码
+        String NICK 								= 		"nick";					//用户昵称
+        String UN_READ_MSG_COUNT 					= 		"unreadMsgCount";		//未读消息数量
+        String AVATAR                               =        "avatar";              //用户头像图片名称
+    }
 	
 	public static interface Contact {
 		String TABLE_NAME 							= 		"t_superwechat_contact";

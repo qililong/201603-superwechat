@@ -1,13 +1,16 @@
 package cn.ucai.fulicenter.activity;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.R;
@@ -35,13 +38,17 @@ public class FulicenterActivity extends BaseActivity {
     private int currentTabIndex;
     Context mContext;
 
+    TextView tvCartCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fulicenter);
         mContext = this;
         initView();
+        init();
         initFragment();
+        registerCartCountChangeListener();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container1, mCategoryFragment).hide(mCategoryFragment)
@@ -50,6 +57,16 @@ public class FulicenterActivity extends BaseActivity {
 //                .hide(contactListFragment)
                 .show(mNewGoodFragment)
                 .commit();
+    }
+
+    private void init() {
+        if (FuliCenterApplication.getInstance().getUser() != null &&
+                FuliCenterApplication.getInstance().getCartList().size() > 0) {
+            tvCartCount.setText("" + FuliCenterApplication.getInstance().getCartList().size());
+            tvCartCount.setVisibility(View.VISIBLE);
+        } else {
+            tvCartCount.setVisibility(View.GONE);
+        }
     }
 
     private void initFragment() {
@@ -69,6 +86,7 @@ public class FulicenterActivity extends BaseActivity {
         mCategory = (RadioButton) findViewById(R.id.btn_category);
         mCart = (RadioButton) findViewById(R.id.btn_cart);
         mPersonal = (RadioButton) findViewById(R.id.btn_personal);
+        tvCartCount = (TextView) findViewById(R.id.tvCartHint);
 
         radios[0] = mNewGood;
         radios[1] = mBoutique;
@@ -92,6 +110,8 @@ public class FulicenterActivity extends BaseActivity {
                 index = 3;
                 break;
             case R.id.btn_personal:
+                if (FuliCenterApplication.getInstance().getUser() == null) {
+                }
                 if (FuliCenterApplication.getInstance().getUser() == null) {
                     mContext.startActivity(new Intent(FulicenterActivity.this, LoginActivity.class)
                     .putExtra("action","personal"));
@@ -136,6 +156,9 @@ public class FulicenterActivity extends BaseActivity {
         } else {
             radios[index].setChecked(true);
         }
+        if (FuliCenterApplication.getInstance().getUser() == null && index == 4) {
+            index = 0;
+        }
         if (currentTabIndex != index) {
             FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
             trx.hide(mFragment[currentTabIndex]);
@@ -152,5 +175,29 @@ public class FulicenterActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+    }
+
+    class CartCountBeceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            init();
+        }
+    }
+
+    CartCountBeceiver mCartCountBeceiver;
+
+    private void registerCartCountChangeListener() {
+        mCartCountBeceiver = new CartCountBeceiver();
+        IntentFilter filter = new IntentFilter("update_cart_list");
+        registerReceiver(mCartCountBeceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mCartCountBeceiver != null) {
+            unregisterReceiver(mCartCountBeceiver);
+        }
     }
 }

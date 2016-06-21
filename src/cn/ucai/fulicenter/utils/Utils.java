@@ -1,6 +1,7 @@
 package cn.ucai.fulicenter.utils;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class Utils {
         if(msg<=0) return null;
         String msgStr = msg+"";
         msgStr = I.MSG_PREFIX_MSG + msgStr;
+        Log.e("main", "getResourceString:" + msgStr);
         int resId = context.getResources().getIdentifier(msgStr, "string", context.getPackageName());
         return context.getResources().getString(resId);
     }

@@ -24,6 +24,8 @@ import java.util.HashMap;
 
 import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.R;
+import cn.ucai.fulicenter.activity.CollectActivity;
+import cn.ucai.fulicenter.activity.SettingsActivity;
 import cn.ucai.fulicenter.task.DownloadCollectCountTask;
 import cn.ucai.fulicenter.utils.UserUtils;
 
@@ -41,6 +43,7 @@ public class Personal_CenterFragment extends Fragment {
     ImageView mivMessage;
     LinearLayout mLayoutCenterCollet;
     RelativeLayout mLayoutCenterUserInfo;
+    TextView setting;
 
     int mCollectCount;
 
@@ -51,9 +54,38 @@ public class Personal_CenterFragment extends Fragment {
         View layout = View.inflate(mContext, R.layout.fragment_personal__center, null);
         initView(layout);
         initData();
+        setListener();
+        return layout;
+    }
+
+    private void setListener() {
         registerUpdateUserChangedReceiver();
         registerUpdateCollectCountReceiver();
-        return layout;
+        setSettingListener();
+        setCenterCollectListener();
+    }
+
+    private void setCenterCollectListener() {
+        mLayoutCenterCollet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (FuliCenterApplication.getInstance().getUser() != null) {
+                    startActivity(new Intent(getActivity(), CollectActivity.class));
+                }
+            }
+        });
+    }
+
+    private void setSettingListener() {
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.tv_center_settings:
+                        startActivity(new Intent(getActivity(), SettingsActivity.class));
+                }
+            }
+        });
     }
 
     private void initData() {
@@ -62,6 +94,7 @@ public class Personal_CenterFragment extends Fragment {
         if (FuliCenterApplication.getInstance().getUser() != null) {
             UserUtils.setCurrentUserAvatar(mivUserAvatar);
             UserUtils.setCurrentUserBeanNick(mtvUserName);
+            mtvCollectCount.setText("" + FuliCenterApplication.getInstance().getmCollectCount());
         }
 
     }
@@ -74,6 +107,7 @@ public class Personal_CenterFragment extends Fragment {
         mtvSettings = (TextView) layout.findViewById(R.id.tv_center_settings);
         mivMessage = (ImageView) layout.findViewById(R.id.iv_persona_center_msg);
         mLayoutCenterUserInfo = (RelativeLayout) layout.findViewById(R.id.center_user_info);
+        setting = (TextView) layout.findViewById(R.id.tv_center_settings);
 
         initOrderList(layout);
     }

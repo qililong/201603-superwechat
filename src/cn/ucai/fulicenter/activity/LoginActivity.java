@@ -19,6 +19,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -34,9 +35,9 @@ import com.easemob.chat.EMGroupManager;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 
-
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ import java.util.Map;
 
 import cn.ucai.fulicenter.Constant;
 import cn.ucai.fulicenter.DemoHXSDKHelper;
+import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.applib.controller.HXSDKHelper;
@@ -56,10 +58,10 @@ import cn.ucai.fulicenter.db.EMUserDao;
 import cn.ucai.fulicenter.db.UserDao;
 import cn.ucai.fulicenter.domain.EMUser;
 import cn.ucai.fulicenter.listener.OnSetAvatarListener;
-import cn.ucai.fulicenter.FuliCenterApplication;
+import cn.ucai.fulicenter.task.DownloadCartListCountTask;
+import cn.ucai.fulicenter.task.DownloadCollectCountTask;
 import cn.ucai.fulicenter.task.DownloadContactListTask;
 import cn.ucai.fulicenter.utils.CommonUtils;
-import cn.ucai.fulicenter.utils.MD5;
 import cn.ucai.fulicenter.utils.Utils;
 
 /**
@@ -138,6 +140,8 @@ public class LoginActivity extends BaseActivity {
 				}
 				currentUsername = usernameEditText.getText().toString().trim();
 				currentPassword = passwordEditText.getText().toString().trim();
+				Log.e("main", "setLoginListener:currentUsername:" + currentUsername.toString());
+				Log.e("main", "setLoginListener:currentPassword:" + currentPassword.toLowerCase());
 
 				if (TextUtils.isEmpty(currentUsername)) {
 					Toast.makeText(mContext, cn.ucai.fulicenter.R.string.User_name_cannot_be_empty, Toast.LENGTH_SHORT).show();
@@ -189,13 +193,16 @@ public class LoginActivity extends BaseActivity {
 		UserDao dao = new UserDao(mContext);
 		User user = dao.findUserByUserName(currentUsername);
 		if (user != null) {
-			if (user.getMUserPassword().equals(MD5.getData(currentPassword))) {
+			Log.e("main", "loginAppServer:" + user.toString());
+			if (user.getMUserPassword().equals(currentPassword)) {
+				Log.e("main", "SUCESSS");
 				saveUser(user);
-				Log.e("main", "User:" + user.toString());
 				loginSuccess();
 			} else {
 				pd.dismiss();
+				Looper.prepare();
 				Toast.makeText(getApplicationContext(), cn.ucai.fulicenter.R.string.login_failure_failed, Toast.LENGTH_LONG).show();
+				Looper.loop();
 			}
 		} else {
 			try {
@@ -217,6 +224,8 @@ public class LoginActivity extends BaseActivity {
 				if (user.isResult()) {
 					saveUser(user);
 					loginSuccess();
+					Log.e("main", "user:" + user.toString());
+					new UserDao(LoginActivity.this).addUser(user);
 				} else {
 					pd.dismiss();
 					Utils.showToast(mContext,Utils.getResourceString(mContext,user.getMsg()),Toast.LENGTH_SHORT);
@@ -265,6 +274,8 @@ public class LoginActivity extends BaseActivity {
 				@Override
 				public void run() {
 					new DownloadContactListTask(mContext, currentUsername).execute();
+					new DownloadCollectCountTask(mContext).execute();
+					new DownloadCartListCountTask(mContext).execute();
 				}
 			});
 			// 处理好友和群组
@@ -292,10 +303,13 @@ public class LoginActivity extends BaseActivity {
 		}
 		// 进入主页面
 		String action = getIntent().getStringExtra("action");
-		Intent intent = new Intent(LoginActivity.this,
-				FulicenterActivity.class)
-				.putExtra("action",action);
-		startActivity(intent);
+//		if (action != null) {
+		sendStickyBroadcast(new Intent("update_contact_list"));
+			Intent intent = new Intent(LoginActivity.this,
+					FulicenterActivity.class)
+					.putExtra("action", action);
+			startActivity(intent);
+//		}
 
 		finish();
 	}
@@ -351,8 +365,6 @@ public class LoginActivity extends BaseActivity {
 	
 	/**
 	 * 注册
-	 * 
-	 * @param
 	 */
 	private void setRegisterListener() {
 		findViewById(R.id.btn_register1).setOnClickListener(new View.OnClickListener() {
@@ -372,6 +384,7 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	public void back(View view) {
-		finish();
+		startActivity(new Intent(LoginActivity.this, FulicenterActivity.class)
+				.putExtra("action", "personal"));
 	}
 }

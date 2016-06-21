@@ -24,7 +24,8 @@ public class DisplayUtils {
     public static void initBackWithTitle(final Activity activity, String title) {
         TextView viewById = (TextView) activity.findViewById(R.id.tv_head_title);
         viewById.setText(title);
-        viewById.setOnClickListener(new View.OnClickListener() {
+        View clickArea = activity.findViewById(R.id.backClickArea);
+        clickArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activity.finish();

@@ -34,6 +34,7 @@ import java.io.File;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.Message;
+import cn.ucai.fulicenter.bean.MessageBean;
 import cn.ucai.fulicenter.data.OkHttpUtils;
 import cn.ucai.fulicenter.listener.OnSetAvatarListener;
 import cn.ucai.fulicenter.FuliCenterApplication;
@@ -156,24 +157,31 @@ public class RegisterActivity extends BaseActivity {
 		//首先注册远端服务器账号，并上传头像---okhttp
 		//注册环信账号
 		//如果环信注册失败，调用取消注册的方法删除远端账号和图片
-		File file = new File(ImageUtils.getAvatarPath(mContext,I.AVATAR_TYPE_USER_PATH),
+		Log.e("main", "registerAppSever");
+		File file = new File(ImageUtils.getAvatarPath(mContext, I.AVATAR_TYPE_USER_PATH),
 				avatarName + I.AVATAR_SUFFIX_JPG);
-		OkHttpUtils<Message> utils = new OkHttpUtils<Message>();
+		Log.e("main", "BBBBBBBBBBBBBBBBBBBBBB");
+		Log.e("main", "username:" + username);
+		Log.e("main", "pwd:" + pwd);
+		Log.e("main", "nick:" + nick);
+		OkHttpUtils<MessageBean> utils = new OkHttpUtils<MessageBean>();
 		utils.url(FuliCenterApplication.SERVER_ROOT)
-				.addParam(I.KEY_REQUEST,I.REQUEST_REGISTER)
-				.addParam(I.User.USER_NAME,username)
-				.addParam(I.User.PASSWORD,pwd)
-				.addParam(I.User.NICK,nick)
-				.targetClass(Message.class)
+				.addParam(I.KEY_REQUEST, I.REQUEST_REGISTER)
+				.addParam(I.Users.NAME, username)
+				.addParam(I.Users.PASSWORD, pwd)
+				.addParam(I.Users.NICK, nick)
+				.targetClass(MessageBean.class)
 				.addFile(file)
-				.execute(new OkHttpUtils.OnCompleteListener<Message>() {
+				.execute(new OkHttpUtils.OnCompleteListener<MessageBean>() {
 					@Override
-					public void onSuccess(Message result) {
-						if (result.isResult()) {
+					public void onSuccess(MessageBean result) {
+						Log.e("main", "PPPPPPPPPPPPPPPPPPPPPPPPP");
+						if (result.isSuccess()) {
+							Log.e("main", "onSuccess");
 							registerEMServer();
 						} else {
 							pd.dismiss();
-							Utils.showToast(mContext, Utils.getResourceString(mContext, result.getMsg()), Toast.LENGTH_SHORT);
+							Utils.showToast(mContext, Utils.getResourceString(mContext, Integer.parseInt(result.getMsg())), Toast.LENGTH_SHORT);
 							Log.e(TAG, "register fail,error:" + result.getMsg());
 						}
 					}
