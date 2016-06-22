@@ -2,7 +2,6 @@ package cn.ucai.fulicenter.task;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.android.volley.Response;
 
@@ -45,7 +44,6 @@ public class DownloadCartListCountTask extends BaseActivity{
                     .with(I.PAGE_ID,pageID+"")
                     .with(I.PAGE_SIZE,pageSize+"")
                     .getRequestUrl(I.REQUEST_FIND_CARTS);
-            Log.e("main", "下载商品:" + path.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,13 +60,11 @@ public class DownloadCartListCountTask extends BaseActivity{
             public void onResponse(CartBean[] cartBean) {
                 if (cartBean != null) {
                     list = Utils.array2List(cartBean);
-                    Log.e("main", "list:" + list.toString());
                     for (CartBean cart : list) {
                         try {
                             path = new ApiParams()
                                     .with(I.CategoryGood.GOODS_ID,cart.getGoodsId() + "")
                                     .getRequestUrl(I.REQUEST_FIND_GOOD_DETAILS);
-                            Log.e("main", "下载商品详情:" + path.toString());
                             executeRequest(new GsonRequest<GoodDetailsBean>(path, GoodDetailsBean.class,
                                     responseDownloadGoodDetailListener(cart), errorListener()));
                         } catch (Exception e) {
@@ -87,12 +83,14 @@ public class DownloadCartListCountTask extends BaseActivity{
                 listSize++;
                 if (goodDetailsBean != null) {
                     cart.setGoods(goodDetailsBean);
-                    ArrayList<CartBean> cartList = FuliCenterApplication.getInstance().getCartList();
+                    cartList = FuliCenterApplication.getInstance().getCartList();
                     if (!cartList.contains(cart)) {
                         cartList.add(cart);
                     }
                 }
                 if (listSize == list.size()) {
+                    FuliCenterApplication.getInstance().setCartList(list);
+                    ArrayList<CartBean> cartList = FuliCenterApplication.getInstance().getCartList();
                     mContext.sendStickyBroadcast(new Intent("update_cart_list"));
                 }
             }

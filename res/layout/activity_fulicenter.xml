@@ -66,9 +66,9 @@
             <RelativeLayout
                 style="@style/menu_item_style_cart">
                 <RadioButton
+                    android:id="@+id/btn_cart"
                     android:button="@null"
                     android:checked="false"
-                    android:id="@+id/btn_cart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"

@@ -134,6 +134,14 @@ public class FuliCenterApplication extends Application {
 		return cartList;
 	}
 
+	public int getIsNow() {
+		return isNow;
+	}
+
+	public void setIsNow(int isNow) {
+		this.isNow = isNow;
+	}
+
 	public void setCartList(ArrayList<CartBean> cartList) {
 		this.cartList = cartList;
 	}

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.fragment.BoutiqueFragment;
+import cn.ucai.fulicenter.fragment.CartFragment;
 import cn.ucai.fulicenter.fragment.CategoryFragment;
 import cn.ucai.fulicenter.fragment.NewGoodFragment;
 import cn.ucai.fulicenter.fragment.Personal_CenterFragment;
@@ -31,6 +32,7 @@ public class FulicenterActivity extends BaseActivity {
     NewGoodFragment mNewGoodFragment;
     BoutiqueFragment mBoutiqueFragment;
     CategoryFragment mCategoryFragment;
+    CartFragment mCartFragment;
     Personal_CenterFragment mPersonal_CenterFragment;
     Fragment[] mFragment = new Fragment[5];
     private int index;
@@ -73,10 +75,12 @@ public class FulicenterActivity extends BaseActivity {
         mNewGoodFragment = new NewGoodFragment();
         mBoutiqueFragment = new BoutiqueFragment();
         mCategoryFragment = new CategoryFragment();
+        mCartFragment = new CartFragment();
         mPersonal_CenterFragment = new Personal_CenterFragment();
         mFragment[0] = mNewGoodFragment;
         mFragment[1] = mBoutiqueFragment;
         mFragment[2] = mCategoryFragment;
+        mFragment[3] = mCartFragment;
         mFragment[4] = mPersonal_CenterFragment;
     }
 
@@ -107,11 +111,14 @@ public class FulicenterActivity extends BaseActivity {
                 index = 2;
                 break;
             case R.id.btn_cart:
-                index = 3;
+                if (FuliCenterApplication.getInstance().getUser() == null) {
+                    mContext.startActivity(new Intent(FulicenterActivity.this, LoginActivity.class)
+                            .putExtra("action", "cart"));
+                } else {
+                    index = 3;
+                }
                 break;
             case R.id.btn_personal:
-                if (FuliCenterApplication.getInstance().getUser() == null) {
-                }
                 if (FuliCenterApplication.getInstance().getUser() == null) {
                     mContext.startActivity(new Intent(FulicenterActivity.this, LoginActivity.class)
                     .putExtra("action","personal"));
@@ -129,15 +136,16 @@ public class FulicenterActivity extends BaseActivity {
             trx.show(mFragment[index]).commit();
             setVisibles(index);
             currentTabIndex = index;
+            FuliCenterApplication.getInstance().setIsNow(index);
         }
     }
 
     public void setVisibles(int index) {
         for (int i = 0; i < radios.length; i++) {
             if (i == index) {
-                radios[i].setSelected(true);
+                radios[i].setChecked(true);
             } else {
-                radios[i].setSelected(false);
+                radios[i].setChecked(false);
             }
         }
     }

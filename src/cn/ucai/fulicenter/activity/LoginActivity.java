@@ -384,7 +384,12 @@ public class LoginActivity extends BaseActivity {
 	}
 
 	public void back(View view) {
-		startActivity(new Intent(LoginActivity.this, FulicenterActivity.class)
-				.putExtra("action", "personal"));
+		if (FuliCenterApplication.getInstance().getIsNow() == 4) {
+			startActivity(new Intent(LoginActivity.this, FulicenterActivity.class)
+					.putExtra("action", "personal"));
+		} else {
+			startActivity(new Intent(LoginActivity.this, FulicenterActivity.class)
+					.putExtra("action", "cart"));
+		}
 	}
 }
