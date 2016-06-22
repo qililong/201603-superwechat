@@ -17,6 +17,7 @@ import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.bean.CartBean;
 import cn.ucai.fulicenter.bean.GoodDetailsBean;
 import cn.ucai.fulicenter.utils.ImageUtils;
+import cn.ucai.fulicenter.utils.Utils;
 
 import static android.support.v7.widget.RecyclerView.ViewHolder;
 
@@ -54,13 +55,22 @@ public class CartAdapter extends RecyclerView.Adapter<ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         cartHolder = (CartItemViewHolder) holder;
-        CartBean cart = mCartBeanList.get(position);
+        final CartBean cart = mCartBeanList.get(position);
         GoodDetailsBean good = cart.getGoods();
         cartHolder.tv_Name.setText(good.getGoodsName());
         cartHolder.tvGoodsPrice.setText(good.getRankPrice());
         cartHolder.tvCartCount.setText("" + cart.getCount());
-        cartHolder.chkSelect.setChecked(true);
         ImageUtils.setNewGoodThumb(good.getGoodsThumb(), cartHolder.nivThumb);
+        AddDelCartClickLinstener listener = new AddDelCartClickLinstener(good, cartHolder, cart);
+        cartHolder.ivAddCart.setOnClickListener(listener);
+        cartHolder.ivReduceCart.setOnClickListener(listener);
+        cartHolder.chkSelect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cart.setChecked(!cart.isChecked());
+                cartHolder.chkSelect.setChecked(!cartHolder.chkSelect.isChecked());
+            }
+        });
     }
 
     @Override
@@ -102,6 +112,33 @@ public class CartAdapter extends RecyclerView.Adapter<ViewHolder> {
             tvCartCount = (TextView) itemView.findViewById(R.id.tvCartCount);
             ivAddCart = (ImageView) itemView.findViewById(R.id.ivAddCart);
             ivReduceCart = (ImageView) itemView.findViewById(R.id.ivReduceCart);
+        }
+    }
+
+    class AddDelCartClickLinstener implements View.OnClickListener {
+
+        GoodDetailsBean good;
+        CartItemViewHolder holder;
+        CartBean cart;
+
+        public AddDelCartClickLinstener(GoodDetailsBean good, CartItemViewHolder holder, CartBean cart) {
+            this.good = good;
+            this.holder = holder;
+            this.cart = cart;
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.ivAddCart:
+                    Utils.add(mContext, good);
+                    holder.tvCartCount.setText(cart.getCount()+"");
+                    break;
+                case R.id.ivReduceCart:
+                    Utils.delCart(mContext, good);
+                    holder.tvCartCount.setText(cart.getCount()+"");
+                    break;
+            }
         }
     }
 }

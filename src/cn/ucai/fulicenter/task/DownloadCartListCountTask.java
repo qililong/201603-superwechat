@@ -92,6 +92,7 @@ public class DownloadCartListCountTask extends BaseActivity{
                     FuliCenterApplication.getInstance().setCartList(list);
                     ArrayList<CartBean> cartList = FuliCenterApplication.getInstance().getCartList();
                     mContext.sendStickyBroadcast(new Intent("update_cart_list"));
+                    mContext.sendStickyBroadcast(new Intent("update_cart"));
                 }
             }
         };

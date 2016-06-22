@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,9 +25,7 @@ import cn.ucai.fulicenter.FuliCenterApplication;
 import cn.ucai.fulicenter.I;
 import cn.ucai.fulicenter.R;
 import cn.ucai.fulicenter.activity.FulicenterActivity;
-import cn.ucai.fulicenter.adapter.BoutiqueAdapter;
 import cn.ucai.fulicenter.adapter.CartAdapter;
-import cn.ucai.fulicenter.bean.BoutiqueBean;
 import cn.ucai.fulicenter.bean.CartBean;
 import cn.ucai.fulicenter.bean.GoodDetailsBean;
 import cn.ucai.fulicenter.data.ApiParams;
@@ -61,6 +60,7 @@ public class CartFragment extends Fragment{
         mContext = (FulicenterActivity) getActivity();
         View layout = View.inflate(mContext, R.layout.fragment_cart,null);
         mGoodList = new ArrayList<CartBean>();
+        registerUpdateCartReceiver();
         initData();
         initView(layout);
 //        getPath();
@@ -119,7 +119,6 @@ public class CartFragment extends Fragment{
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
-                        mtvHint.setVisibility(View.VISIBLE);
                         action = I.ACTION_PULL_DOWN;
                         new DownloadCartListCountTask(mContext);
                     }
@@ -132,12 +131,10 @@ public class CartFragment extends Fragment{
             new DownloadCartListCountTask(mContext).execute();
             mGoodList = FuliCenterApplication.getInstance().getCartList();
             Log.e("main", "initData:mGoodlist:" + mGoodList.toString());
-            sumPrice();
             if (mGoodList == null || mGoodList.size() == 0) {
                 nothing.setVisibility(View.VISIBLE);
             } else {
                 nothing.setVisibility(View.GONE);
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -206,7 +203,8 @@ public class CartFragment extends Fragment{
                     }
                 }
                 if (listSize == list.size()) {
-                    initData();
+                    FuliCenterApplication.getInstance().setCartList(list);
+                    sumPrice();
                 }
             }
         };
@@ -240,14 +238,15 @@ public class CartFragment extends Fragment{
             for (CartBean cart : mGoodList) {
                 GoodDetailsBean goods = cart.getGoods();
                 if (goods != null && cart.isChecked()) {
-                    sumPrice += convertPrice(goods.getRankPrice()) * cart.getCount();
-                    currentPrice += convertPrice(goods.getCurrencyPrice()) * cart.getCount();
+                    sumPrice += convertPrice(goods.getCurrencyPrice()) * cart.getCount();
+                    currentPrice += convertPrice(goods.getRankPrice()) * cart.getCount();
                 }
             }
         }
         int savePrice = sumPrice - currentPrice;
         mtvRankPrice.setText("合计:￥" + sumPrice);
         mtvSavePrice.setText("节省:￥" + savePrice);
+
     }
 
     private int convertPrice(String rankPrice) {
@@ -256,6 +255,26 @@ public class CartFragment extends Fragment{
         return p1;
     }
 
+    class UpdateCartReceiver extends BroadcastReceiver {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initData();
+        }
+    }
 
+    UpdateCartReceiver mReceiver;
+    private void registerUpdateCartReceiver() {
+        mReceiver = new UpdateCartReceiver();
+        IntentFilter filter = new IntentFilter("update_cart");
+        mContext.registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mReceiver != null) {
+            mContext.unregisterReceiver(mReceiver);
+        }
+    }
 }
